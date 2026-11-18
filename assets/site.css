@@ -48,8 +48,9 @@ img { max-width: 100%; display: block; }
     transparent 32px 38px, #FFB84D 38px 48px, transparent 48px 54px, #2EC4B6 54px 64px, transparent 64px 120px);
 }
 
-/* ---- header ---- */
-.top { position: relative; z-index: 3; }
+/* ---- header (locked to the top — user, Nov 18) ---- */
+.top { position: sticky; top: 0; z-index: 30; background: var(--paper); border-bottom: 1px solid var(--rule); }
+html { scroll-padding-top: 104px; }   /* menu links land below the locked header */
 .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 18px; padding-bottom: 18px; }
 .lockup { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
 .lockup img { width: 52px; height: 52px; border-radius: 13px; background: var(--red); object-fit: contain; flex: none; }
@@ -62,9 +63,13 @@ img { max-width: 100%; display: block; }
 .nav a { color: var(--ink); text-decoration: none; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 12px; border-radius: 10px; }
 .nav a:hover, .nav a[aria-current="page"] { background: rgba(255, 107, 53, 0.14); color: var(--mango); }
 @media (max-width: 720px) {
-  .top .wrap { flex-direction: column; align-items: flex-start; }
-  .nav { justify-content: flex-start; margin-left: -12px; }
+  .top .wrap { flex-direction: column; align-items: flex-start; gap: 6px; padding-top: 10px; padding-bottom: 8px; }
+  .nav { justify-content: flex-start; margin-left: -10px; gap: 0; }
+  .nav a { padding: 6px 10px; font-size: 0.74rem; }
+  .lockup img { width: 40px; height: 40px; border-radius: 10px; }
+  .lockup .wordmark { font-size: 28px; }
   .tagline { display: none; }
+  html { scroll-padding-top: 130px; }
 }
 
 /* ---- hero ---- */
@@ -238,7 +243,8 @@ section.block { padding: 72px 0; border-top: 1px solid var(--rule); }
   .feature:last-child { border-bottom: 0; }
 }
 
-.downloads { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.downloads { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }   /* Android · Windows · Remote */
+@media (max-width: 1060px) and (min-width: 761px) { .downloads { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .dl { padding: 26px; border-radius: 20px; background: var(--card); border: 1px solid var(--rule); display: flex; flex-direction: column; gap: 12px; }
 .dl h3 { font-size: 1.6rem; }
 .dl .meta { color: var(--ink-mute); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; }
@@ -289,8 +295,19 @@ section.block { padding: 72px 0; border-top: 1px solid var(--rule); }
 .doc .steps li { counter-increment: s; position: relative; padding: 16px 18px 16px 58px; border-radius: 14px; background: var(--card); border: 1px solid var(--rule); margin: 0; }
 .doc .steps li::before { content: counter(s); position: absolute; left: 16px; top: 14px; width: 28px; height: 28px; border-radius: 50%; background: var(--orange); color: #FFF; font-weight: 800; display: grid; place-items: center; font-size: 0.9rem; }
 
-/* ---- footer ---- */
-footer { border-top: 1px solid var(--rule); padding: 34px 0 44px; color: var(--ink-mute); font-size: 0.9rem; }
+/* ---- contact (home) ---- */
+.contacts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.contacts h3 { overflow-wrap: anywhere; }
+@media (max-width: 760px) { .contacts { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---- footer (locked to the bottom — user, Nov 18) ---- */
+footer { position: sticky; bottom: 0; z-index: 30; background: var(--paper); border-top: 1px solid var(--rule); padding: 12px 0; color: var(--ink-mute); font-size: 0.86rem; }
+@media (max-width: 720px) {
+  footer { padding: 8px 0; font-size: 0.78rem; }
+  footer .wrap { gap: 4px 14px; justify-content: center; }
+  footer .wrap > span { display: none; }   /* phone: just the links, so the bar stays thin */
+  footer nav { justify-content: center; gap: 2px 14px; }
+}
 footer .wrap { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center; justify-content: space-between; }
 footer nav { display: flex; flex-wrap: wrap; gap: 6px 18px; }
 footer nav a { color: var(--ink-soft); text-decoration: none; font-weight: 700; }
