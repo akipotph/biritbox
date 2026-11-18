@@ -10,7 +10,7 @@
 <meta property="og:image" content="assets/favicon-192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/favicon-192.png">
-<link rel="stylesheet" href="assets/site.css?v=9">
+<link rel="stylesheet" href="assets/site.css?v=13">
 </head>
 <body>
 
@@ -41,7 +41,7 @@
         <p class="lead">Sing alone, with the whole barkada, in a duet over the internet, or go head-to-head in Tapatan. Lyrics on screen, a score for every singer — and no account to sign up for.</p>
         <div class="ctas">
           <a class="btn primary" href="#download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>Get the app</a>
-          <a class="btn ghost" href="privacy.html">How we handle your data</a>
+          <a class="btn ghost" href="privacy.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>How we handle your data</a>
         </div>
         <!-- the Birit Box theme (user, Nov 16: "dagdag mo yung mp3") — plays only when pressed -->
         <div class="theme" id="theme">
@@ -159,7 +159,7 @@
         <div><dt>Android</dt><dd>Version 0.5.10</dd></div>
         <div><dt>Windows</dt><dd>Coming soon</dd></div>
         <div><dt>Account</dt><dd>None needed</dd></div>
-        <div><dt>Contact</dt><dd><a href="mailto:aki.codeviberph@gmail.com">aki.codeviberph@gmail.com</a></dd></div>
+        <div><dt>Contact</dt><dd><a href="#contact">Send us a message</a></dd></div>
       </dl>
     </div>
 
@@ -197,6 +197,11 @@
       <p class="eyebrow">Get Birit Box</p>
       <h2>Download</h2>
       <p class="intro">Free to download. Install it, open it, birit na.</p>
+      <!-- Download counter (user, Nov 18): the total from GitHub Releases (akipotph/biritbox), read in the browser -->
+      <div class="dl-counter" id="dlCounter" aria-live="polite">
+        <span class="dl-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg></span>
+        <span><b id="dlTotal">0</b> <span id="dlWord">downloads</span> so far</span>
+      </div>
       <div class="downloads">
         <div class="dl">
           <span class="meta">Android · Version 0.5.10</span>
@@ -205,12 +210,14 @@
           <!-- Download off for now; restore href="[[GITHUB APK LINK]]" on an <a class="btn primary"> when the APK is up. -->
           <button type="button" class="btn primary" disabled aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>Download APK</button>
           <span class="small">Download coming soon.</span>
+          <span class="dl-n" data-dl="android"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><b>0</b> downloads</span>
         </div>
         <div class="dl soon">
           <span class="badge">Coming soon</span>
           <h3>Birit Box for Windows</h3>
           <p>The desktop app — the big-screen stage, Group sessions with phones on your Wi-Fi, recordings and going live on Facebook, YouTube and TikTok.</p>
           <button type="button" class="btn primary" disabled aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>Download for Windows</button>
+          <span class="dl-n" data-dl="windows"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><b>0</b> downloads</span>
         </div>
         <!-- Birit Box Remote APK (user, Nov 18). Download off for now, like the others. -->
         <div class="dl">
@@ -219,6 +226,7 @@
           <p>Turn your phone into the videoke remote. On the same Wi-Fi as Birit Box on your PC: reserve songs by number or search, line up the queue, play, pause and skip.</p>
           <button type="button" class="btn primary" disabled aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>Download Remote APK</button>
           <span class="small">Download coming soon.</span>
+          <span class="dl-n" data-dl="remote"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><b>0</b> downloads</span>
         </div>
       </div>
     </div>
@@ -237,7 +245,7 @@
             <li>Going live connects you straight to the platform you pick — Birit Box doesn't keep your lives.</li>
           </ul>
         </div>
-        <a class="btn ghost" href="privacy.html">Read the Privacy Policy</a>
+        <a class="btn ghost" href="privacy.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>Read the Privacy Policy</a>
       </div>
     </div>
   </section>
@@ -248,17 +256,28 @@
       <h2>Contact</h2>
       <p class="intro">Questions, song requests, a bug, or just want to say hi? Message us — we read everything.</p>
       <div class="contacts">
-        <div class="dl">
-          <span class="meta">Email</span>
-          <h3>aki.codeviberph@gmail.com</h3>
-          <p>For help with the app, your data, or anything about Birit Box.</p>
-          <a class="btn primary" href="mailto:aki.codeviberph@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Send an email</a>
-        </div>
+        <!-- Message form (user, Nov 18: "sarili natin form … wala ng import ng email" + "security para sa spam").
+             Sent through Web3Forms to the Birit Box inbox; the access key below is public by design (it can only
+             send to that inbox). Spam: hidden honeypot, 3 s minimum, 60 s between sends, length limits, Web3Forms' filter. -->
+        <form class="dl cform" id="contactForm" novalidate>
+          <span class="meta">Send us a message</span>
+          <input type="hidden" name="access_key" value="89fdd60d-30a8-41bc-a30d-589b3776134a">
+          <label class="hp" aria-hidden="true">Leave this empty <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label>
+          <div class="cf-row">
+            <label class="cf-field"><span>Name</span><input type="text" name="name" maxlength="80" autocomplete="name" required></label>
+            <label class="cf-field"><span>Email <em>(so we can reply)</em></span><input type="email" name="email" maxlength="120" autocomplete="email" required></label>
+          </div>
+          <label class="cf-field"><span>Message</span><textarea name="message" rows="5" minlength="10" maxlength="2000" required></textarea></label>
+          <div class="cf-foot">
+            <button type="submit" class="btn primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>Send</button>
+            <p class="cf-status" role="status" aria-live="polite"></p>
+          </div>
+        </form>
         <div class="dl">
           <span class="meta">Support</span>
           <h3>Suportahan ang Birit Box</h3>
           <p>Birit Box is free. If you like it, you can chip in through GCash or GoTyme so the birit keeps going.</p>
-          <a class="btn ghost" href="#support">Show the QR</a>
+          <a class="btn ghost" href="#support"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>Show the QR</a>
         </div>
       </div>
     </div>
@@ -277,6 +296,6 @@
   </div>
 </footer>
 
-<script src="assets/site.js?v=7"></script>
+<script src="assets/site.js?v=10"></script>
 </body>
 </html>

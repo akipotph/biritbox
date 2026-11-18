@@ -243,6 +243,17 @@ section.block { padding: 72px 0; border-top: 1px solid var(--rule); }
   .feature:last-child { border-bottom: 0; }
 }
 
+/* download counter (GitHub Releases) */
+.dl-counter { display: inline-flex; align-items: center; gap: 12px; margin: -16px 0 24px; padding: 8px 16px 8px 8px; border-radius: 999px;
+  background: var(--card); border: 1px solid var(--rule); color: var(--ink-soft); font-weight: 700; }
+.dl-counter[hidden] { display: none; }
+.dl-counter .dl-ic { width: 36px; height: 36px; border-radius: 50%; background: var(--teal); color: #062B27; display: grid; place-items: center; }
+.dl-counter .dl-ic svg { width: 18px; height: 18px; }
+.dl-counter b { color: var(--ink); font-family: var(--font-display); font-weight: 400; font-size: 1.35rem; letter-spacing: 0.02em; }
+.dl-n { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; margin-top: auto; padding: 5px 12px 5px 8px; border-radius: 999px;
+  background: rgba(46, 196, 182, 0.12); color: var(--teal); font-weight: 800; font-size: 0.85rem; }
+.dl-n svg { width: 15px; height: 15px; }
+.dl-n b { color: var(--ink); font-family: var(--font-display); font-weight: 400; font-size: 1rem; letter-spacing: 0.02em; }
 .downloads { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }   /* Android · Windows · Remote */
 @media (max-width: 1060px) and (min-width: 761px) { .downloads { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .dl { padding: 26px; border-radius: 20px; background: var(--card); border: 1px solid var(--rule); display: flex; flex-direction: column; gap: 12px; }
@@ -296,8 +307,27 @@ section.block { padding: 72px 0; border-top: 1px solid var(--rule); }
 .doc .steps li::before { content: counter(s); position: absolute; left: 16px; top: 14px; width: 28px; height: 28px; border-radius: 50%; background: var(--orange); color: #FFF; font-weight: 800; display: grid; place-items: center; font-size: 0.9rem; }
 
 /* ---- contact (home) ---- */
-.contacts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.contacts { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 14px; align-items: start; }   /* form · support */
 .contacts h3 { overflow-wrap: anywhere; }
+/* message form (Web3Forms) */
+.cform { margin: 0; }
+.cform .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }   /* honeypot: people never see it */
+.cf-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.cf-field { display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 0.9rem; color: var(--ink); }
+.cf-field em { font-style: normal; font-weight: 600; color: var(--ink-mute); }
+.cf-field input, .cf-field textarea {
+  width: 100%; font: 500 1rem/1.4 var(--font-body); color: var(--ink); background: var(--paper);
+  border: 1.5px solid var(--rule-strong); border-radius: 12px; padding: 11px 14px; resize: vertical;
+}
+.cf-field textarea { min-height: 120px; }
+.cf-field input:focus, .cf-field textarea:focus { outline: none; border-color: var(--orange); }
+.cf-field input[aria-invalid="true"], .cf-field textarea[aria-invalid="true"] { border-color: var(--red); }
+.cf-foot { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.cf-foot .btn { margin-top: 0; }
+.cf-status { margin: 0; font-weight: 700; font-size: 0.92rem; color: var(--ink-soft); }
+.cf-status.ok { color: var(--teal); }
+.cf-status.err { color: #FF8A8F; }
+@media (max-width: 560px) { .cf-row { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 760px) { .contacts { grid-template-columns: minmax(0, 1fr); } }
 
 /* ---- footer (locked to the bottom — user, Nov 18) ---- */
