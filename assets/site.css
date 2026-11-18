@@ -524,3 +524,42 @@ footer .wordmark { font-size: 22px; }
 .cal-grid .cal-pills { gap: 1px; }
 .cal-grid button em, .cal-split .cal-grid button em { line-height: 1.45; }
 @media (max-width: 640px) { .cal-grid button { height: 58px; } }
+
+/* "LIVE NOW" green with a live effect (user, Nov 18: "green dapat yan tapos may effects"):
+   the dot pings outward and the pill softly glows; the live card's border is green too. Still flat — no gradients. */
+:root { --live: #22C55E; --live-ink: #04210F; }
+.tag.live { position: relative; background: var(--live); color: var(--live-ink); animation: liveGlow 1.8s ease-in-out infinite; }
+.tag.live i { position: relative; width: 7px; height: 7px; border-radius: 50%; background: var(--live-ink); }
+.tag.live i::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--live-ink); animation: livePing 1.4s cubic-bezier(0, 0, 0.2, 1) infinite; }
+.sch.live { border-color: var(--live); }
+@keyframes livePing { 0% { transform: scale(1); opacity: 0.8; } 80%, 100% { transform: scale(2.6); opacity: 0; } }
+@keyframes liveGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); } 50% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } }
+@media (prefers-reduced-motion: reduce) { .tag.live, .tag.live i::after { animation: none; } }
+.sch.live .when .d { color: var(--live); }
+
+/* live card (user, Nov 18): a smaller time with the Birit mode pill under it; the mode icon on a VINYL disc */
+.sch .when .t { font-size: 1.15rem; margin-top: 2px; white-space: nowrap; }
+.sch .when .t small { font: 700 0.7rem var(--font-body); color: var(--ink-soft); }
+.mpill { display: inline-block; margin-top: 6px; padding: 2px 9px; border-radius: 999px; font: 800 0.64rem/1.5 var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--red); }
+.mpill.tapatan { background: var(--orange); } .mpill.group { background: var(--teal); color: #062B27; }
+.sch .mode.vinyl { width: 64px; height: 64px; border-radius: 50%; position: relative; background: #0d0d0d;
+  background-image: repeating-radial-gradient(circle at 50% 50%, #0d0d0d 0 2px, #1c1c1c 2px 3px); border: 1px solid #2a2a2a; }
+.sch .mode.vinyl .vl { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--red); }
+.sch .mode.vinyl.tapatan .vl { background: var(--orange); } .sch .mode.vinyl.group .vl { background: var(--teal); }
+.sch .mode.vinyl .vl img { width: 22px; max-height: 18px; }
+.sch.live .mode.vinyl { animation: vinylSpin 6s linear infinite; }          /* a live session's record turns */
+@keyframes vinylSpin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .sch.live .mode.vinyl { animation: none; } }
+.sch.planned .side .mpill { margin-top: 0; }
+/* only the RECORD turns, not the icon (user, Nov 18: "wag mo isama yung icon sa pag ikot"): the grooves + a light
+   streak sit on ::before and spin; the coloured label with the mode icon stays still on top */
+.sch .mode.vinyl { background: none; border: 0; animation: none !important; position: relative; overflow: hidden; }
+.sch .mode.vinyl::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1px solid #2a2a2a;
+  background: conic-gradient(from 0deg, transparent 0 40deg, rgba(255, 241, 230, 0.14) 55deg, transparent 70deg 220deg, rgba(255, 241, 230, 0.08) 235deg, transparent 250deg),
+              repeating-radial-gradient(circle at 50% 50%, #0d0d0d 0 2px, #1c1c1c 2px 3px); }
+.sch.live .mode.vinyl::before { animation: vinylSpin 3.5s linear infinite; }
+.sch .mode.vinyl .vl { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) { .sch.live .mode.vinyl::before { animation: none; } }
+/* label + icon dead-centre on the record (user, Nov 18: "center") */
+.sch .mode.vinyl .vl { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 1; display: grid; place-items: center; }
+.sch .mode.vinyl .vl img { display: block; margin: 0; }

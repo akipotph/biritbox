@@ -123,6 +123,10 @@
     note: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
     wait: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
   };
+  // the Birit mode as a small pill under the time, and its icon on a vinyl disc (user, Nov 18)
+  var MODE_NAME = { tapatan: "Tapatan", group: "Group", duet: "Duet" };
+  function modePill(m) { return '<span class="mpill ' + m + '">' + (MODE_NAME[m] || "") + "</span>"; }
+  function vinyl(m) { return '<div class="mode vinyl ' + m + '"><span class="vl"><img src="assets/modes/' + m + '.svg" alt=""></span></div>'; }
   function card(l) {
     var c = clock(l.createdAt || Date.now()), full = l.listeners >= l.max, code = l.guest && l.guestUntil > Date.now();
     var who = esc(l.host) + (l.mode === "group" ? " · " + l.singers + " singers" : l.partner ? " &amp; " + esc(l.partner) : "");
@@ -130,8 +134,8 @@
       : code ? '<a class="btn primary" href="biritbox://guest/' + esc(l.guest) + '">' + IC.ear + 'Listen</a>'
       : '<span class="btn ghost is-off">' + IC.wait + 'Opening soon</span>';
     return '<article class="sch live">' +
-      '<div class="when"><span class="d">Live</span><span class="t">' + c.t + '</span><span class="ap">' + c.ap + '</span></div>' +
-      '<div class="mode ' + l.mode + '"><img src="assets/modes/' + l.mode + '.svg" alt=""></div>' +
+      '<div class="when"><span class="d">Live</span><span class="t">' + c.t + ' <small>' + c.ap + '</small></span>' + modePill(l.mode) + '</div>' +
+      vinyl(l.mode) +
       '<div class="info"><h3 class="pub">' + esc(l.pub) + '</h3><div class="meta">' +
         '<span class="pubno"><b>PUB #</b><span>' + l.pubNo + '</span></span>' +
         '<span class="tag live"><i></i>Live now</span>' +
@@ -139,7 +143,7 @@
         '<span>' + IC.user + who + '</span>' +
         '<span>' + IC.ear + l.listeners + ' / ' + l.max + ' listening</span>' +
       '</div>' + (l.song ? '<div class="sch-song">' + IC.note + esc(l.song) + '</div>' : '') + '</div>' +
-      '<div class="side">' + btn + '<small>' + ({ tapatan: "Tapatan", group: "Group", duet: "Duet" })[l.mode] + '</small></div>' +
+      '<div class="side">' + btn + '</div>' +
     '</article>';
   }
   // ---- scheduled sessions (Nostr): the host's app signed them; we check every signature ----
@@ -171,7 +175,7 @@
         (isLive ? '<span class="tag live"><i></i>Live now — see above</span>' : started ? '<span class="tag soon">Starting — host not on yet</span>' : '<span class="tag upcoming">Upcoming</span><span class="tag soon">In ' + left(p.startAt - Date.now()) + '</span>') +
         '<span>' + IC.user + esc(p.host) + '</span><span>' + IC.wait + '1 hour</span>' +
       '</div></div>' +
-      '<div class="side"><small>' + ({ tapatan: "Tapatan", group: "Group", duet: "Duet" })[p.mode] + '</small></div>' +
+      '<div class="side">' + modePill(p.mode) + '</div>' +
     '</article>';
   }
 
