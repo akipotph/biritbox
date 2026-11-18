@@ -343,3 +343,30 @@ footer nav { display: flex; flex-wrap: wrap; gap: 6px 18px; }
 footer nav a { color: var(--ink-soft); text-decoration: none; font-weight: 700; }
 footer nav a:hover { color: var(--mango); }
 footer .wordmark { font-size: 22px; }
+
+/* ---- Birit Sessions page (sessions.html) — its own tab (user, Nov 18) ---- */
+.sessions-page { border-top: 0; padding-top: 48px; }
+.page-title { font-size: clamp(2.2rem, 4.4vw, 3.2rem); margin: 0; }
+.sch-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin: 0 0 16px; }
+.seg { display: inline-flex; padding: 4px; gap: 4px; border-radius: 14px; background: var(--card); border: 1px solid var(--rule); }
+.seg span { color: var(--ink-mute); font-weight: 800; font-size: 0.86rem; padding: 8px 14px; border-radius: 10px; display: inline-flex; gap: 7px; align-items: center; }
+.seg span svg { width: 16px; height: 16px; }
+.seg span.on { background: var(--ink); color: #000; }
+.sch-count { color: var(--ink-mute); font-weight: 700; font-size: 0.9rem; }
+.sch-empty { display: flex; gap: 22px; align-items: flex-start; padding: 28px; border-radius: 22px; background: var(--card); border: 1px dashed var(--rule-strong); }
+.sch-empty-ic { flex: none; width: 72px; height: 72px; border-radius: 20px; background: var(--teal); color: #062B27; display: grid; place-items: center; }
+.sch-empty-ic svg { width: 38px; height: 38px; }
+.sch-empty h2 { font-size: 1.7rem; margin: 10px 0 6px; }
+.sch-empty p { margin: 0; color: var(--ink-soft); max-width: 40em; }
+.badge-soon { display: inline-block; padding: 5px 12px; border-radius: 999px; background: rgba(46, 196, 182, 0.14); color: var(--teal); font-weight: 800; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.sch-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.how-title { font-size: 1.6rem; margin: 48px 0 16px; }
+.how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.how { padding: 22px; border-radius: 20px; background: var(--card); border: 1px solid var(--rule); }
+.how h3 { font-size: 1.2rem; margin: 14px 0 6px; }
+.how p { margin: 0; color: var(--ink-soft); font-size: 0.95rem; }
+.how-ic { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; }
+.how-ic svg { width: 26px; height: 26px; }
+.t-teal { background: var(--teal); color: #062B27; } .t-mango { background: var(--mango); color: #1A1206; }
+.t-red { background: var(--red); color: #fff; } .t-orange { background: var(--orange); color: #fff; } .t-cream { background: var(--ink); color: #000; }
+@media (max-width: 760px) { .sch-empty { flex-direction: column; padding: 22px; } }
