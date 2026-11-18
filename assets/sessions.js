@@ -139,7 +139,7 @@
         '<span>' + IC.user + who + '</span>' +
         '<span>' + IC.ear + l.listeners + ' / ' + l.max + ' listening</span>' +
       '</div>' + (l.song ? '<div class="sch-song">' + IC.note + esc(l.song) + '</div>' : '') + '</div>' +
-      '<div class="side"><small>' + ({ tapatan: "Tapatan", group: "Group", duet: "Duet" })[l.mode] + '</small></div>' +
+      '<div class="side">' + btn + '<small>' + ({ tapatan: "Tapatan", group: "Group", duet: "Duet" })[l.mode] + '</small></div>' +
     '</article>';
   }
   // ---- scheduled sessions (Nostr): the host's app signed them; we check every signature ----
@@ -162,7 +162,7 @@
   }
   function planCard(p) {
     var c = clock(p.startAt), started = p.startAt <= Date.now(), isLive = started && p.endsAt > Date.now() && Object.keys(found).some(function (k) { return found[k].pubNo === p.pubNo; }); // only the booking whose hour is NOW (user Nov 18: 7:00 showed Live at 5:23)
-    var btn = '<a class="btn ghost" download="birit-box-session.ics" href="' + ics(p) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18M12 13v5M9.5 15.5h5"/></svg>Add to calendar</a>';
+    // no "Add to calendar" (user, Nov 18: it's on the calendar by itself once the host books it)
     return '<article class="sch planned">' +
       '<div class="when"><span class="d">' + esc(dayLabel(p.startAt)) + '</span><span class="t">' + c.t + '</span><span class="ap">' + c.ap + '</span></div>' +
       '<div class="mode ' + p.mode + '"><img src="assets/modes/' + p.mode + '.svg" alt=""></div>' +
@@ -179,6 +179,21 @@
   var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   function dayStart(ms) { var d = new Date(ms); d.setHours(0, 0, 0, 0); return d.getTime(); }
   function shortTime(t) { var d = new Date(t), h = d.getHours() % 12 || 12, m = d.getMinutes(); return h + (m ? ":" + two(m) : "") + (d.getHours() < 12 ? "a" : "p"); }
+  function fullTime(t) { var d = new Date(t), h = d.getHours() % 12 || 12; return h + ":" + two(d.getMinutes()) + " " + (d.getHours() < 12 ? "AM" : "PM"); }
+  // a day with more than 4 bookings: a small card with all of them on hover / focus
+  var calTip = null;
+  function showCalTip(b) {
+    var ms = Number(b.getAttribute("data-day"));
+    var day = bookings.filter(function (x) { return x.startAt < ms + 864e5 && x.endsAt > ms && (filter === "all" || x.mode === filter); }).sort(function (a, z) { return a.startAt - z.startAt; });
+    if (!calTip) { calTip = document.createElement("div"); calTip.className = "cal-tip"; calTip.setAttribute("role", "tooltip"); document.body.appendChild(calTip); }
+    calTip.innerHTML = "<b>" + esc(dayLabel(ms)) + " · " + day.length + " sessions</b>" + day.map(function (x) { return '<span><i class="' + x.mode + '">' + fullTime(x.startAt) + "</i>" + esc(x.pub) + "</span>"; }).join("");
+    calTip.hidden = false;
+    var r = b.getBoundingClientRect(), w = calTip.offsetWidth, h = calTip.offsetHeight;
+    var left = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, innerWidth - w - 8)), top = r.top - h - 6;
+    if (top < 8) top = r.bottom + 6;
+    calTip.style.left = left + "px"; calTip.style.top = top + "px";
+  }
+  function hideCalTip() { if (calTip) calTip.hidden = true; }
   function renderCal() {
     var grid = document.getElementById("calGrid");
     if (!grid) return;
@@ -193,9 +208,10 @@
     for (var i = 1; i <= days; i++) {
       var ms = new Date(base.getFullYear(), base.getMonth(), i).getTime();
       var list = bookings.filter(function (x) { return x.startAt < ms + 864e5 && x.endsAt > ms && (filter === "all" || x.mode === filter); });
-      var shown = list.length > 2 ? 1 : list.length; // narrower squares now (side by side): 2 pills max, else 1 + "+N"
-      var pills = list.slice(0, shown).map(function (x) { return '<em class="' + x.mode + '">' + shortTime(x.startAt) + "</em>"; }).join("") + (list.length > shown ? '<em class="more">+' + (list.length - shown) + "</em>" : "");
-      html += '<button type="button" data-day="' + ms + '" class="' + (ms < t0 ? "past " : "") + (ms === t0 ? "today" : "") + '" aria-pressed="' + (ms === calDay) + '"><b>' + i + "</b>" + pills + "</button>";
+      // like the app (user, Nov 18): pills on the RIGHT of the date, full "8:00 PM", up to 4; more → 3 + "+N" + a tooltip card
+      var shown = list.length > 4 ? 3 : list.length;
+      var pills = list.length ? '<span class="cal-pills">' + list.slice(0, shown).map(function (x) { return '<em class="' + x.mode + '">' + fullTime(x.startAt) + "</em>"; }).join("") + (list.length > shown ? '<em class="more">+' + (list.length - shown) + "</em>" : "") + "</span>" : "";
+      html += '<button type="button" data-day="' + ms + '"' + (list.length > 4 ? ' data-more="1"' : "") + ' class="' + (ms < t0 ? "past " : "") + (ms === t0 ? "today" : "") + '" aria-pressed="' + (ms === calDay) + '"><b>' + i + "</b>" + pills + "</button>";
     }
     grid.innerHTML = html;
     var day = bookings.filter(function (x) { return x.startAt < calDay + 864e5 && x.endsAt > calDay && (filter === "all" || x.mode === filter); }).sort(function (a, z) { return a.startAt - z.startAt; });
@@ -222,6 +238,14 @@
     var next = rows.reduce(function (m, l) { return l.guestUntil > Date.now() ? Math.min(m, l.guestUntil) : m; }, Infinity);
     if (next < Infinity) render.t = setTimeout(function () { look(); }, Math.max(3000, next - Date.now() + 3000));
   }
+  (function () {
+    var g = document.getElementById("calGrid"); if (!g) return;
+    g.addEventListener("mouseover", function (e) { var b = e.target.closest("[data-more]"); if (b) showCalTip(b); else hideCalTip(); });
+    g.addEventListener("mouseleave", hideCalTip);
+    g.addEventListener("focusin", function (e) { var b = e.target.closest("[data-more]"); if (b) showCalTip(b); });
+    g.addEventListener("focusout", hideCalTip);
+    addEventListener("scroll", hideCalTip, { passive: true });
+  })();
   document.getElementById("calGrid") && document.getElementById("calGrid").addEventListener("click", function (e) {
     var b = e.target.closest("[data-day]"); if (!b) return;
     calDay = Number(b.getAttribute("data-day")); renderCal();

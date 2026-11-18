@@ -499,3 +499,28 @@ footer .wordmark { font-size: 22px; }
 .sch.planned .meta > * { flex: none; }
 .sch.planned .meta > span:not(.pubno):not(.tag) { display: none; } /* host + "1 hour" hidden in thin rows (every booking is 1 hour) */
 @media (max-width: 480px) { .sch.planned .meta .tag + .tag { display: none; } }
+
+/* calendar like the app (user, Nov 18: "sa website adapt mo din"): FLAT (no stripes), compact squares, pills on the
+   RIGHT of the date — small, full "8:00 PM", regular weight, up to 4 — and a tooltip card when there are more */
+.cal { background: transparent; }
+.cal-top { padding: 12px 12px 8px; }
+.cal::before, .cal-top::before { display: none !important; }
+.cal-grid { gap: 5px; padding: 0 12px; }
+.cal-grid button { aspect-ratio: auto; height: 64px; flex-direction: row; align-items: flex-start; gap: 4px; padding: 5px 4px 4px 6px; border-radius: 10px; background: transparent; }
+.cal-grid button b { flex: none; font: 500 0.9rem/1 var(--font-body); padding: 1px 0 0; }
+.cal-grid .cal-pills { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.cal-grid button em, .cal-split .cal-grid button em { font: 400 0.56rem/1.55 var(--font-body); padding: 0 3px; border-radius: 4px; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: clip; flex: none; }
+.cal-grid button[aria-pressed="true"] { border-width: 1.5px; background: transparent; }
+.cal-tip { position: fixed; z-index: 60; min-width: 190px; max-width: 260px; padding: 9px 11px; border-radius: 10px; background: #161616; border: 1px solid var(--rule-strong);
+  display: flex; flex-direction: column; gap: 5px; pointer-events: none; font-size: 0.82rem; color: var(--ink-soft); }
+.cal-tip[hidden] { display: none; }
+.cal-tip b { color: var(--ink); font-weight: 600; }
+.cal-tip span { display: flex; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cal-tip i { font-style: normal; min-width: 62px; color: #FF8A8F; } .cal-tip i.tapatan { color: var(--orange); } .cal-tip i.group { color: var(--teal); }
+@media (max-width: 640px) { .cal-grid button { height: 54px; padding: 3px 2px 2px 3px; gap: 2px; } .cal-grid button b { font-size: 0.72rem; } .cal-grid button em, .cal-split .cal-grid button em { font-size: 0.44rem; padding: 0 1px; } }
+.cal-split .cal-grid button { gap: 4px; padding: 5px 4px 4px 6px; }
+@media (max-width: 640px) { .cal-split .cal-grid button { padding: 3px 2px 2px 3px; gap: 2px; } }
+.cal-grid button { height: 72px; }
+.cal-grid .cal-pills { gap: 1px; }
+.cal-grid button em, .cal-split .cal-grid button em { line-height: 1.45; }
+@media (max-width: 640px) { .cal-grid button { height: 58px; } }

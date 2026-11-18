@@ -81,8 +81,11 @@ export function myKey() {
     do { k = hex(crypto.getRandomValues(new Uint8Array(32))); } while (BigInt("0x" + k) === 0n || BigInt("0x" + k) >= N);
     try { localStorage.setItem("birit.nostrKey", k); } catch {}
   }
-  return { priv: k, pub: pubOf(k) };
+  // the public key is a slow BigInt point multiply — work it out ONCE per key (Nov 18: the calendar asked 30×/render → 0.3 s lag)
+  if (_myKeyCache.priv !== k) { _myKeyCache.priv = k; _myKeyCache.pub = pubOf(k); }
+  return { priv: k, pub: _myKeyCache.pub };
 }
+const _myKeyCache = { priv: "", pub: "" };
 
 // ---- events ----
 // Proof-of-work (NIP-13): a booking's id must start with POW_BITS zero bits. One booking costs a phone about a
