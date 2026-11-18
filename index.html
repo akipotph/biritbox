@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Birit Box — Birit na!</title>
+<meta name="description" content="Birit Box is a videoke app for your PC and phone: sing Solo, with your Group, in a Duet over the internet, or go head-to-head in Tapatan. No account needed.">
+<meta property="og:title" content="Birit Box — Birit na!">
+<meta property="og:description" content="Videoke for your PC and phone. Hawak ang mikropono, ikaw ang bida dito.">
+<meta property="og:image" content="assets/favicon-192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/favicon-192.png">
+<link rel="stylesheet" href="assets/site.css?v=7">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="lockup" href="index.html" aria-label="Birit Box home">
+      <img src="assets/app-icon.png" alt="" width="52" height="52">
+      <span class="wm"><span class="wordmark"><span class="birit">Birit</span> <span class="box">Box</span></span><span class="tagline">Hawak ang mikropono, ikaw ang bida dito</span></span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#modes">Modes</a>
+      <a href="#features">Features</a>
+      <a href="#about">About</a>
+      <a href="#download">Download</a>
+      <a href="privacy.html">Privacy</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="stripes" aria-hidden="true"></div>
+    <div class="wrap">
+      <div>
+        <p class="kicker"><i aria-hidden="true"></i>Videoke for your PC and phone</p>
+        <h1 class="tagline-hero"><span class="tl">Hawak ang mikropono,</span> <span class="tl accent">ikaw ang bida dito</span></h1>
+        <p class="lead">Sing alone, with the whole barkada, in a duet over the internet, or go head-to-head in Tapatan. Lyrics on screen, a score for every singer — and no account to sign up for.</p>
+        <div class="ctas">
+          <a class="btn primary" href="#download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>Get the app</a>
+          <a class="btn ghost" href="privacy.html">How we handle your data</a>
+        </div>
+        <!-- the Birit Box theme (user, Nov 16: "dagdag mo yung mp3") — plays only when pressed -->
+        <div class="theme" id="theme">
+          <button class="theme-btn" type="button" aria-pressed="false" aria-label="Play the Birit Box theme">
+            <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+            <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>
+          </button>
+          <div class="theme-info">
+            <span class="theme-title">Pakinggan ang <b>Birit Box</b> theme</span>
+            <span class="theme-bar" aria-hidden="true"><i></i></span>
+          </div>
+          <span class="theme-time">1:03</span>
+          <audio preload="none" src="assets/birit-box-theme.mp3"></audio>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="glow"></div>
+        <img src="assets/app-icon.png" alt="" width="676" height="784">
+        <span class="chip">Score: <b>98</b></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="modes">
+    <div class="wrap">
+      <p class="eyebrow">Four ways to sing</p>
+      <h2>Pick your Birit mode</h2>
+      <p class="intro">Every mode sings on the same stage, with a score card when the song ends.</p>
+      <div class="modes">
+        <article class="mode" style="--c: #FF6B35">
+          <img class="shot" src="assets/shots/solo.jpg" alt="Birit Box Solo: the karaoke stage" width="772" height="561" loading="lazy">
+          <div class="mode-name"><div class="ic" style="-webkit-mask-image: url(assets/modes/solo.svg); mask-image: url(assets/modes/solo.svg)"></div><h3>Solo</h3></div>
+          <p>Just you and the mic.</p>
+          <span class="tag">1 singer</span>
+        </article>
+        <article class="mode" style="--c: #FFB84D">
+          <img class="shot" src="assets/shots/group.jpg" alt="Birit Box Group: singers and their scores" width="772" height="584" loading="lazy">
+          <div class="mode-name"><div class="ic" style="-webkit-mask-image: url(assets/modes/group.svg); mask-image: url(assets/modes/group.svg)"></div><h3>Group</h3></div>
+          <p>One queue for the party. A score for everyone.</p>
+          <span class="tag">4 to 10 singers</span>
+        </article>
+        <article class="mode" style="--c: #2EC4B6">
+          <img class="shot" src="assets/shots/duet.jpg" alt="Birit Box Duet: two singers on one song" width="772" height="594" loading="lazy">
+          <div class="mode-name"><div class="ic" style="-webkit-mask-image: url(assets/modes/duet.svg); mask-image: url(assets/modes/duet.svg)"></div><h3>Duet</h3></div>
+          <p>Two devices, one song.</p>
+          <span class="tag">2 singers</span>
+        </article>
+        <article class="mode" style="--c: #E8434A">
+          <img class="shot" src="assets/shots/tapatan.jpg" alt="Birit Box Tapatan: round result, 89 vs 86" width="772" height="594" loading="lazy">
+          <div class="mode-name"><div class="ic" style="-webkit-mask-image: url(assets/modes/tapatan.svg); mask-image: url(assets/modes/tapatan.svg)"></div><h3>Tapatan</h3></div>
+          <p>Face-off. The scores decide.</p>
+          <span class="tag">Head-to-head</span>
+        </article>
+      </div>
+
+      <!-- Song Gallery (user, Nov 16: "lagyan mo mga screenshot pati yung song gallery natin") -->
+      <div class="gallery">
+        <img class="gallery-shot" src="assets/shots/song-gallery.jpg" alt="The Birit Box Song Gallery: a song book cover" width="520" height="796" loading="lazy">
+        <div class="gallery-text">
+          <p class="eyebrow">Song Gallery</p>
+          <h3>Browse like a real song book</h3>
+          <p>Flip the pages, tap a song, it's in the queue.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="features">
+    <div class="wrap">
+      <p class="eyebrow">Inside the box</p>
+      <h2>Everything for a proper birit</h2>
+      <p class="intro">Built for the living room, the tambayan and the small stage.</p>
+      <div class="features">
+        <div class="feature">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h10"/><path d="M4 18h13"/></svg>Lyrics and scoring</h3>
+          <p>Lyrics on screen, a score after every song.</p>
+        </div>
+        <div class="feature">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h5v18H6a2 2 0 0 1-2-2Z"/><path d="M13 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5Z"/></svg>Song Gallery</h3>
+          <p>Flip through songs like a real song book.</p>
+        </div>
+        <div class="feature">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>Recordings</h3>
+          <p>Record your birit and keep it.</p>
+        </div>
+        <div class="feature">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M8.5 15.5a5 5 0 0 1 0-7"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M5.6 18.4a9 9 0 0 1 0-12.8"/><path d="M18.4 5.6a9 9 0 0 1 0 12.8"/></svg>Go live</h3>
+          <p>Stream to Facebook, YouTube or TikTok from the PC app.</p>
+        </div>
+        <div class="feature">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16.1a5 5 0 0 1 7 0"/><path d="m3 3 18 18"/></svg>Sings offline</h3>
+          <p>Solo sings even without internet.</p>
+        </div>
+        <div class="feature">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v6c0 4.4 3 8.3 7 9.5 4-1.2 7-5.1 7-9.5V6Z"/><path d="m9 12 2 2 4-4"/></svg>Private by design</h3>
+          <p>No account. Your data stays on your device.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="about">
+    <div class="wrap">
+    <div class="about">
+      <div class="about-text">
+        <p class="eyebrow">About the app</p>
+        <h2>What is Birit Box?</h2>
+        <p>In Filipino, <strong>birit</strong> means to belt out a song — the high note everyone waits for. Birit Box is a videoke app made for that moment: at home, in the tambayan, or with the barkada across town. It's inspired by <strong>Song Hub</strong> and <strong>Kara Okay</strong> — maraming salamat sa inspirasyon!</p>
+        <p class="about-vibe">This isn't your typical karaoke, though. Birit Box goes <strong>retro</strong> — warm colors, old-school stripes and a laid-back, pang-chillin' vibe.</p>
+        <p>It turns a PC or a phone into a videoke. Pick a song, the lyrics roll on screen with the music, and a score card tells you how you did. Sing alone, line up the whole group, or connect with a friend in another place for a Duet or a Tapatan.</p>
+        <p>There's nothing to sign up for. Birit Box runs on your own device, and what you sing, record and save stays there.</p>
+      </div>
+      <dl class="about-facts">
+        <div><dt>Made for</dt><dd>Solo singers, groups of 4 to 10, duets and face-offs</dd></div>
+        <div><dt>Android</dt><dd>Version 0.5.10</dd></div>
+        <div><dt>Windows</dt><dd>Coming soon</dd></div>
+        <div><dt>Account</dt><dd>None needed</dd></div>
+        <div><dt>Contact</dt><dd><a href="mailto:aki.codeviberph@gmail.com">aki.codeviberph@gmail.com</a></dd></div>
+      </dl>
+    </div>
+
+    <!-- "libre lang yung app" + the support QR codes (GCash | GoTyme — user, Nov 17) -->
+    <div class="libre">
+      <div class="libre-main">
+        <div class="stripes" aria-hidden="true"></div>
+        <p class="libre-label">Birit Box · Ticket</p>
+        <p class="libre-price"><span class="peso">₱</span>0</p>
+        <h3>Libre ang Birit Box</h3>
+        <p class="libre-sub">Free to download and free to sing. Install it, open it — birit na.</p>
+        <ul class="libre-chips">
+          <li>₱0 download</li>
+          <li>No subscription</li>
+          <li>No account</li>
+        </ul>
+      </div>
+      <div class="libre-stub">
+        <p class="libre-stub-h">Suportahan ang Birit Box</p>
+        <div class="pay-tabs" role="tablist" aria-label="Pay with">
+          <button type="button" role="tab" data-pay="gcash" aria-selected="true"><img class="pay-ic" src="assets/gcash-icon.png" alt="" width="20" height="20">GCash</button>
+          <button type="button" role="tab" data-pay="gotyme" aria-selected="false"><img class="pay-ic" src="assets/gotyme-icon.png" alt="" width="20" height="20">GoTyme</button>
+        </div>
+        <button type="button" class="qr pay-qr-btn" data-pay-open aria-label="Support via GCash — show the details">
+          <img src="assets/gcash-qr.png" alt="GCash QR code" width="160" height="160">
+        </button>
+        <p class="libre-stub-note">Tap the QR for the details.</p>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <section class="block" id="download">
+    <div class="wrap">
+      <p class="eyebrow">Get Birit Box</p>
+      <h2>Download</h2>
+      <p class="intro">Free to download. Install it, open it, birit na.</p>
+      <div class="downloads">
+        <div class="dl">
+          <span class="meta">Android · Version 0.5.10</span>
+          <h3>Birit Box for Android</h3>
+          <p>Install the APK on your phone or tablet. Your phone may ask you to allow installing apps from your browser or file manager — that's normal for apps outside the Play Store.</p>
+          <!-- Download off for now; restore href="[[GITHUB APK LINK]]" on an <a class="btn primary"> when the APK is up. -->
+          <button type="button" class="btn primary" disabled aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>Download APK</button>
+          <span class="small">Download coming soon.</span>
+        </div>
+        <div class="dl soon">
+          <span class="badge">Coming soon</span>
+          <h3>Birit Box for Windows</h3>
+          <p>The desktop app — the big-screen stage, Group sessions with phones on your Wi-Fi, recordings and going live on Facebook, YouTube and TikTok.</p>
+          <button type="button" class="btn primary" disabled aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>Download for Windows</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <div class="promise">
+        <div class="stripes" aria-hidden="true"></div>
+        <div>
+          <p class="eyebrow">Your data</p>
+          <h2>Your songs, your device</h2>
+          <ul>
+            <li>No sign-up and no Birit Box account.</li>
+            <li>History, recordings and settings stay on your device.</li>
+            <li>Going live connects you straight to the platform you pick — Birit Box doesn't keep your lives.</li>
+          </ul>
+        </div>
+        <a class="btn ghost" href="privacy.html">Read the Privacy Policy</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><span class="wordmark"><span class="birit">Birit</span> <span class="box">Box</span></span> &nbsp;© 2026</span>
+    <nav aria-label="Legal">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="data-deletion.html">Data Deletion</a>
+      <a href="terms.html">Terms of Use</a>
+      <a href="mailto:aki.codeviberph@gmail.com">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="assets/site.js?v=7"></script>
+</body>
+</html>
