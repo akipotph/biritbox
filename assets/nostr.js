@@ -24,14 +24,45 @@ function inv(a, m = P) {               // a^-1 mod m (extended Euclid)
   while (x !== 0n) { const q = y / x; [y, x] = [x, y - q * x]; [v, u] = [u, v - q * u]; }
   return mod(v, m);
 }
-function add(p1, p2) {                 // affine point add (null = infinity)
-  if (!p1) return p2; if (!p2) return p1;
-  const [x1, y1] = p1, [x2, y2] = p2;
-  if (x1 === x2) { if (mod(y1 + y2) === 0n) return null; const l = mod(3n * x1 * x1 * inv(2n * y1)); const x3 = mod(l * l - 2n * x1); return [x3, mod(l * (x1 - x3) - y1)]; }
-  const l = mod((y2 - y1) * inv(x2 - x1)); const x3 = mod(l * l - x1 - x2);
-  return [x3, mod(l * (x1 - x3) - y1)];
+function add(p1, p2) {                 // affine point add (null = infinity) — kept for callers; the hot path is Jacobian
+  return toA(jAdd(toJ(p1), toJ(p2)));
 }
-function mul(k, pt = G) { let r = null, q = pt; k = mod(k, N); while (k > 0n) { if (k & 1n) r = add(r, q); q = add(q, q); k >>= 1n; } return r; }
+// Jacobian coordinates (X/Z², Y/Z³): no inverse per step, ONE at the end. (Nov 18 load test: the old affine math did
+// ~500 inverses per check — 50 ms on a PC, far more on a phone; hundreds of bookings froze the calendar.)
+const J0 = [0n, 1n, 0n];
+const toJ = (p) => (p ? [p[0], p[1], 1n] : J0);
+function toA(j) { if (j[2] === 0n) return null; const zi = inv(j[2]), zi2 = mod(zi * zi); return [mod(j[0] * zi2), mod(j[1] * zi2 * zi)]; }
+function jDbl(p) {
+  const [X, Y, Z] = p; if (Z === 0n || Y === 0n) return J0;
+  const YY = mod(Y * Y), S = mod(4n * X * YY), M = mod(3n * X * X), X3 = mod(M * M - 2n * S);
+  return [X3, mod(M * (S - X3) - 8n * YY * YY), mod(2n * Y * Z)];
+}
+function jAdd(p, q) {
+  if (p[2] === 0n) return q; if (q[2] === 0n) return p;
+  const [X1, Y1, Z1] = p, [X2, Y2, Z2] = q;
+  const Z1Z1 = mod(Z1 * Z1), Z2Z2 = mod(Z2 * Z2), U1 = mod(X1 * Z2Z2), U2 = mod(X2 * Z1Z1);
+  const S1 = mod(Y1 * Z2 * Z2Z2), S2 = mod(Y2 * Z1 * Z1Z1);
+  if (U1 === U2) return S1 === S2 ? jDbl(p) : J0;
+  const H = mod(U2 - U1), R = mod(S2 - S1), HH = mod(H * H), HHH = mod(H * HH), V = mod(U1 * HH);
+  const X3 = mod(R * R - HHH - 2n * V);
+  return [X3, mod(R * (V - X3) - S1 * HHH), mod(Z1 * Z2 * H)];
+}
+function table(pt) { const t = [J0, toJ(pt)]; for (let i = 2; i < 16; i++) t.push(jAdd(t[i - 1], t[1])); return t; }   // pt·0 … pt·15
+let _gTable = null;
+const gTable = () => _gTable || (_gTable = table(G));
+// a·A + b·B with one shared chain of doublings, 4 bits at a time (Strauss–Shamir)
+function mul2(a, A, b, B) {
+  const ta = a ? (A === G ? gTable() : table(A)) : null, tb = b ? (B === G ? gTable() : table(B)) : null;
+  let r = J0;
+  for (let i = 63; i >= 0; i--) {
+    r = jDbl(jDbl(jDbl(jDbl(r))));
+    const sh = BigInt(i * 4);
+    if (ta) { const n = Number((a >> sh) & 15n); if (n) r = jAdd(r, ta[n]); }
+    if (tb) { const n = Number((b >> sh) & 15n); if (n) r = jAdd(r, tb[n]); }
+  }
+  return r;
+}
+function mul(k, pt = G) { k = mod(k, N); return k === 0n ? null : toA(mul2(k, pt, 0n, null)); }
 function liftX(x) {                    // the point with even y for this x
   if (x >= P) return null;
   const c = mod(x * x * x + 7n); let y = 1n, b = c, e = (P + 1n) / 4n;
@@ -69,7 +100,7 @@ export async function schnorrVerify(msgU8, pubHex, sigHex) {
   const sig = unhex(sigHex); const r = toInt(sig.slice(0, 32)), s = toInt(sig.slice(32));
   if (r >= P || s >= N) return false;
   const e = mod(toInt(await tagged("BIP0340/challenge", sig.slice(0, 32), unhex(pubHex), msgU8)), N);
-  const R = add(mul(s), mul(N - e, Pp));
+  const R = toA(mul2(s, G, mod(N - e, N), Pp));        // s·G − e·P in one pass
   return !!R && R[1] % 2n === 0n && R[0] === r;
 }
 
@@ -163,13 +194,28 @@ export async function checkBooking(ev) {
   if (!dTag || !/^biritbox:[a-z0-9]{4,12}$/.test(dTag[1] || "") || !(ev.tags || []).some((x) => x[0] === "t" && x[1] === TAG)) return null;
   let c; try { c = JSON.parse(ev.content); } catch { return null; }
   if (!c || c.v !== 1) return null;
-  const id = hex(await sha256(enc.encode(JSON.stringify([0, ev.pubkey, ev.created_at, ev.kind, ev.tags, ev.content]))));
-  if (id !== ev.id || !(await schnorrVerify(u8(ev.id), ev.pubkey, ev.sig))) return null;
+  // cheap checks FIRST (fields, the work on the id), the signature last — spam is turned away for almost nothing
   const startAt = Number(c.startAt) || 0, endsAt = Number(c.endsAt) || 0;
   const mode = ["duet", "tapatan", "group"].includes(c.mode) ? c.mode : null;
   if (!c.cancelled && (zeroBits(ev.id) < POW_BITS || !mode || !/^\d{4}$/.test(String(c.pubNo)) || endsAt <= startAt || endsAt - startAt > 2 * 3600e3)) return null;
+  // TODAY only (user, Nov 18: "today lang dapat pwede mag book … unfair sa iba na nag-aabang"): a booking made for
+  // more than 24 h after it was signed doesn't count, whatever app made it
+  if (!c.cancelled && startAt > (Number(ev.created_at) || 0) * 1000 + 24 * 3600e3) return null;
+  const id = hex(await sha256(enc.encode(JSON.stringify([0, ev.pubkey, ev.created_at, ev.kind, ev.tags, ev.content]))));
+  if (id !== ev.id) return null;
+  // the id covers the key + content, so once its signature checked out on this device it never needs checking again
+  if (!okIds().has(id)) { if (!(await schnorrVerify(u8(ev.id), ev.pubkey, ev.sig))) return null; rememberOk(id); }
   return { key: ev.pubkey + "|" + dTag[1], room: dTag[1].slice(9), by: ev.pubkey, id: ev.id, created: ev.created_at, cancelled: !!c.cancelled,
     pub: String(c.pub || "Birit Session").slice(0, 60), pubNo: String(c.pubNo || ""), mode, host: String(c.host || "").slice(0, 40), startAt, endsAt, live: !!c.live };
+}
+// ids whose signature this device already checked (kept small; ids are hashes, nothing personal)
+let _okIds = null;
+function okIds() { if (_okIds) return _okIds; try { _okIds = new Set(JSON.parse(localStorage.getItem("birit.okIds") || "[]")); } catch { _okIds = new Set(); } return _okIds; }
+let _okSave = 0;
+function rememberOk(id) {
+  const s = okIds(); s.add(id);
+  if (s.size > 800) { const keep = [...s].slice(-600); _okIds = new Set(keep); }
+  clearTimeout(_okSave); _okSave = setTimeout(() => { try { localStorage.setItem("birit.okIds", JSON.stringify([..._okIds])); } catch {} }, 300);
 }
 // ask the relays for every booking (scheduled up to ~2 weeks ahead); resolves with the checked, current ones
 export function readBookings(relays = RELAYS, ms = 7000) {
@@ -179,7 +225,7 @@ export function readBookings(relays = RELAYS, ms = 7000) {
     let ws; try { ws = new WebSocket(url); } catch { return res(); }
     const sub = "bb" + Math.random().toString(36).slice(2, 8);
     const t = setTimeout(() => { try { ws.close(); } catch {} res(); }, ms);
-    ws.onopen = () => ws.send(JSON.stringify(["REQ", sub, { kinds: [KIND], "#t": [TAG], since: Math.floor(Date.now() / 1000) - 16 * 86400, limit: 500 }]));
+    ws.onopen = () => ws.send(JSON.stringify(["REQ", sub, { kinds: [KIND], "#t": [TAG], since: Math.floor(Date.now() / 1000) - 2 * 86400, limit: 500 }]));
     ws.onmessage = (m) => {
       let d; try { d = JSON.parse(m.data); } catch { return; }
       if (d[0] === "EOSE" && d[1] === sub) { reached++; clearTimeout(t); try { ws.close(); } catch {} res(); return; }
@@ -190,20 +236,35 @@ export function readBookings(relays = RELAYS, ms = 7000) {
     ws.onerror = () => { clearTimeout(t); res(); };
   }))).then(() => Promise.all(pending)).then(() => { const out = [...latest.values()].filter((b) => !b.cancelled && b.endsAt > Date.now()); out.reached = reached; return out; });
 }
-// one public session per hour for everyone: the EARLIEST booking of an hour keeps it; an overlapping later one
-// loses. A device keeps at most 3 future bookings (its first 3).
+// Up to PER_HOUR public sessions at the same time, for everyone (user, Nov 18: "10 na lang … pag puno na slot … ibang
+// available time"). The EARLIEST bookings keep their places; a later one that would make an hour the 11th loses.
+// A device keeps at most 3 future bookings (its first 3) and never two at the same time.
+export const PER_HOUR = 10;
+// the most bookings of `list` running at any moment inside [startAt, endsAt)
+export function busyIn(list, startAt, endsAt) {
+  const pts = [startAt, ...list.filter((a) => a.startAt > startAt && a.startAt < endsAt).map((a) => a.startAt)];
+  let most = 0;
+  for (const p of pts) { let n = 0; for (const a of list) if (a.startAt <= p && p < a.endsAt) n++; if (n > most) most = n; }
+  return most;
+}
 export function winners(list) {
   const per = new Map(), out = [];
   for (const b of [...list].sort((a, z) => a.created - z.created || (a.id < z.id ? -1 : 1))) {
     const n = per.get(b.by) || 0;
     if (n >= 3) continue;
-    if (out.some((a) => a.startAt < b.endsAt && b.startAt < a.endsAt)) continue;
+    const near = out.filter((a) => a.startAt < b.endsAt && b.startAt < a.endsAt);
+    if (near.some((a) => a.by === b.by)) continue;               // one device, one session at a time
+    if (busyIn(near, b.startAt, b.endsAt) >= PER_HOUR) continue;  // that hour is full
     per.set(b.by, n + 1);
     out.push(b);
   }
   return out.sort((a, z) => a.startAt - z.startAt);
 }
-// is [startAt, endsAt) free? (the booking for `room` itself doesn't count)
-export function clash(list, startAt, endsAt, room) {
-  return winners(list).find((b) => b.room !== room && b.startAt < endsAt && startAt < b.endsAt) || null;
+// can [startAt, endsAt) still be booked? null = yes. Otherwise: MY OWN booking at that time (when `me` is given),
+// or { full: true, n } when PER_HOUR sessions already run then. (The booking for `room` itself doesn't count.)
+export function clash(list, startAt, endsAt, room, me) {
+  const near = winners(list).filter((b) => b.room !== room && b.startAt < endsAt && startAt < b.endsAt);
+  if (me) { const own = near.find((b) => b.by === me); if (own) return own; }
+  const n = busyIn(near, startAt, endsAt);
+  return n >= PER_HOUR ? { full: true, n } : null;
 }

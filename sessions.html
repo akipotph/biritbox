@@ -1,12 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script src="assets/palette.js?v=1"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Birit Sessions — Birit Box</title>
 <meta name="description" content="Public Duet and Tapatan sessions from Birit Box pubs. Listen in the Birit Box app.">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-<link rel="stylesheet" href="assets/site.css?v=33">
+<link rel="stylesheet" href="assets/site.css?v=36">
+<link rel="stylesheet" href="assets/palettes.css?v=1">
 </head>
 <body>
 
@@ -23,6 +25,7 @@
       <a href="index.html#contact">Contact</a>
       <a href="privacy.html">Privacy</a>
     </nav>
+    <button type="button" class="theme-btn" id="themeToggle" aria-label="Theme" title="Theme"></button>
   </div>
 </header>
 
@@ -108,11 +111,11 @@
 </main>
 <script type="module">
   // scheduled sessions come from Nostr relays; signatures are checked here (assets/nostr.js)
-  import * as N from "./assets/nostr.js?v=2";
+  import * as N from "./assets/nostr.js?v=7";
   window.BiritNostr = N;
   window.dispatchEvent(new Event("birit-nostr"));
 </script>
-<script src="assets/sessions.js?v=11"></script>
+<script src="assets/sessions.js?v=13"></script>
 
 <footer>
   <div class="wrap">

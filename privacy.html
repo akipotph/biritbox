@@ -1,12 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script src="assets/palette.js?v=1"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy Policy — Birit Box</title>
 <meta name="description" content="How the Birit Box videoke app handles your information.">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-<link rel="stylesheet" href="assets/site.css?v=33">
+<link rel="stylesheet" href="assets/site.css?v=36">
+<link rel="stylesheet" href="assets/palettes.css?v=1">
 </head>
 <body>
 
@@ -24,6 +26,7 @@
       <a href="privacy.html" aria-current="page">Privacy</a>
       <a href="terms.html">Terms</a>
     </nav>
+    <button type="button" class="theme-btn" id="themeToggle" aria-label="Theme" title="Theme"></button>
   </div>
 </header>
 
@@ -105,8 +108,8 @@
     <h2>6a. Birit Sessions (public listings)</h2>
     <p>When a host opens or schedules a <strong>public</strong> Duet, Tapatan or Group with <strong>Show on the website</strong> turned on (it can be turned off), the Birit Sessions page shows its pub name, Pub #, host name, mode, start and end time, how many are listening and the song on now.</p>
     <ul>
-      <li><strong>Live sessions</strong> are read straight from the host's Birit Box app through free public connection servers (WebTorrent trackers). Nothing is stored: when the app closes, the listing is gone.</li>
-      <li><strong>Scheduled sessions</strong> are signed by the host's device and sent to free public Nostr relays (independent servers run by other people), so the page can show them while the app is closed. They carry only the details above, expire when the session's hour ends, and are removed when the host cancels. Each device has its own anonymous key — no account, email or phone number.</li>
+      <li><strong>Live sessions</strong> are read straight from the host's Birit Box app through the same public connection services described in section 3. Nothing is stored: when the app closes, the listing is gone.</li>
+      <li><strong>Scheduled sessions</strong> are signed by the host's device and posted to public relay services, so the page can show them while the app is closed. They carry only the details above, expire when the session's hour ends, and are removed when the host cancels. Each device has its own anonymous key — no account, email or phone number.</li>
       <li>Listeners get a 10-minute guest code; the host lets each one in. Chat and reactions in a session go device to device and are not stored.</li>
     </ul>
 

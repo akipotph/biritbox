@@ -148,7 +148,7 @@
   }
   // ---- scheduled sessions (Nostr): the host's app signed them; we check every signature ----
   // scheduled + "on the go" bookings from Nostr relays: every signature and proof-of-work is checked
-  // (assets/nostr.js); one public session per hour — the earliest booking of an hour keeps it
+  // (assets/nostr.js); up to 10 public sessions per hour, booked for today only — the earliest keep their places
   var bookings = [];
   function readPlanned() {
     var N = window.BiritNostr;
@@ -190,7 +190,16 @@
     var ms = Number(b.getAttribute("data-day"));
     var day = bookings.filter(function (x) { return x.startAt < ms + 864e5 && x.endsAt > ms && (filter === "all" || x.mode === filter); }).sort(function (a, z) { return a.startAt - z.startAt; });
     if (!calTip) { calTip = document.createElement("div"); calTip.className = "cal-tip"; calTip.setAttribute("role", "tooltip"); document.body.appendChild(calTip); }
-    calTip.innerHTML = "<b>" + esc(dayLabel(ms)) + " · " + day.length + " sessions</b>" + day.map(function (x) { return '<span><i class="' + x.mode + '">' + fullTime(x.startAt) + "</i>" + esc(x.pub) + "</span>"; }).join("");
+    // the same card as the app's hour card (user, Nov 18: "sa website ganyan din"): icons, PUB # chip, outlined mode pills
+    var ic = function (d) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + "</svg>"; };
+    var CAL = ic('<rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/>'), PEOPLE = ic('<circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.7c2.6.2 4.4 2 5 5.3"/>'), MIC = ic('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>');
+    var NAME = { duet: "Duet", tapatan: "Tapatan", group: "Group" };
+    calTip.className = "cal-tip v2";
+    calTip.innerHTML = '<div class="tp-head"><span class="tp-tile">' + CAL + '</span><div class="tp-ttl"><b>' + esc(dayLabel(ms)) + '</b><small>' + PEOPLE + day.length + (day.length === 1 ? " session" : " sessions") + "</small></div></div>" +
+      '<ul class="tp-list">' + day.slice(0, 8).map(function (x) {
+        return '<li><span class="tp-time">' + fullTime(x.startAt) + '</span><span class="tp-no"><b>PUB #</b>' + esc(x.pubNo) + '</span><span class="tp-name" title="' + esc(x.pub) + '">' + MIC + "<span>" + esc(x.pub) + "</span></span>" +
+          '<em class="tp-mode ' + x.mode + '"><i class="tp-fig" style="--fig:url(' + new URL("assets/modes/" + x.mode + ".svg", location.href).href + ')"></i>' + NAME[x.mode] + "</em></li>";
+      }).join("") + (day.length > 8 ? '<li class="tp-more">+' + (day.length - 8) + " more in today's list</li>" : "") + "</ul>";
     calTip.hidden = false;
     var r = b.getBoundingClientRect(), w = calTip.offsetWidth, h = calTip.offsetHeight;
     var left = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, innerWidth - w - 8)), top = r.top - h - 6;
@@ -215,7 +224,7 @@
       // like the app (user, Nov 18): pills on the RIGHT of the date, full "8:00 PM", up to 4; more → 3 + "+N" + a tooltip card
       var shown = list.length > 4 ? 3 : list.length;
       var pills = list.length ? '<span class="cal-pills">' + list.slice(0, shown).map(function (x) { return '<em class="' + x.mode + '">' + fullTime(x.startAt) + "</em>"; }).join("") + (list.length > shown ? '<em class="more">+' + (list.length - shown) + "</em>" : "") + "</span>" : "";
-      html += '<button type="button" data-day="' + ms + '"' + (list.length > 4 ? ' data-more="1"' : "") + ' class="' + (ms < t0 ? "past " : "") + (ms === t0 ? "today" : "") + '" aria-pressed="' + (ms === calDay) + '"><b>' + i + "</b>" + pills + "</button>";
+      html += '<button type="button" data-day="' + ms + '"' + (list.length > 4 ? ' data-more="1"' : "") + (list.length ? ' data-has="1"' : "") + ' class="' + (ms < t0 ? "past " : "") + (ms === t0 ? "today" : "") + '" aria-pressed="' + (ms === calDay) + '"><b>' + i + "</b>" + pills + "</button>";
     }
     grid.innerHTML = html;
     var day = bookings.filter(function (x) { return x.startAt < calDay + 864e5 && x.endsAt > calDay && (filter === "all" || x.mode === filter); }).sort(function (a, z) { return a.startAt - z.startAt; });
@@ -244,9 +253,9 @@
   }
   (function () {
     var g = document.getElementById("calGrid"); if (!g) return;
-    g.addEventListener("mouseover", function (e) { var b = e.target.closest("[data-more]"); if (b) showCalTip(b); else hideCalTip(); });
+    g.addEventListener("mouseover", function (e) { var b = e.target.closest("[data-has]"); if (b) showCalTip(b); else hideCalTip(); });
     g.addEventListener("mouseleave", hideCalTip);
-    g.addEventListener("focusin", function (e) { var b = e.target.closest("[data-more]"); if (b) showCalTip(b); });
+    g.addEventListener("focusin", function (e) { var b = e.target.closest("[data-has]"); if (b) showCalTip(b); });
     g.addEventListener("focusout", hideCalTip);
     addEventListener("scroll", hideCalTip, { passive: true });
   })();
