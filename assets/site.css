@@ -472,15 +472,30 @@ footer .wordmark { font-size: 22px; }
 .cal-split .cal { margin: 0; }
 .cal-split .cal-day { position: sticky; top: 88px; max-height: calc(100vh - 170px); overflow-y: auto; padding-right: 4px; }
 .cal-split .cal-day-title { margin-top: 4px; }
-.cal-split .sch { grid-template-columns: 96px minmax(0, 1fr); gap: 12px 14px; padding: 14px 16px; }
-.cal-split .sch .mode { display: none; }
-.cal-split .sch .pub { white-space: normal; font-size: 1.2rem; }
-.cal-split .sch .side { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; }
 @media (max-width: 940px) {
   .cal-split { grid-template-columns: minmax(0, 1fr); }
   .cal-split .cal-day { position: static; max-height: none; overflow: visible; padding-right: 0; }
 }
-.cal-split .sch .side { justify-content: flex-end; }
-.cal-split .sch .side small { text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; }
 .cal-split .cal-grid button { gap: 3px; padding: 6px 5px; }
 .cal-split .cal-grid button em { font-size: 0.64rem; line-height: 1.5; flex: none; }
+
+/* scheduled sessions as THIN rows (user, Nov 18: "manipis pa ... kung marami naka schedule kakain ng space") —
+   time | name + Pub # + tag + host on two short lines | mode. Used in the top "Scheduled" list and beside the calendar. */
+.sch.planned { grid-template-columns: 64px minmax(0, 1fr) auto; gap: 12px; padding: 9px 14px; border-radius: 14px; }
+.sch.planned .mode { display: none; }
+.sch.planned .when { padding-right: 10px; }
+.sch.planned .when .d { font-size: 0.6rem; letter-spacing: 0.08em; }
+.sch.planned .when .t { font-size: 1.15rem; margin: 0; }
+.sch.planned .when .ap { font-size: 0.66rem; }
+.sch.planned .pub { font-size: 1rem; white-space: nowrap; }
+.sch.planned .meta { margin-top: 4px; gap: 4px 10px; font-size: 0.76rem; flex-wrap: nowrap; overflow: hidden; white-space: nowrap; }
+.sch.planned .pubno b { padding: 2px 6px; font-size: 0.6rem; } .sch.planned .pubno span { padding: 2px 7px; font-size: 0.8rem; }
+.sch.planned .tag { font-size: 0.6rem; padding: 2px 8px; }
+.sch.planned .meta svg { width: 13px; height: 13px; }
+.sch.planned .side { grid-column: auto; flex-direction: column; align-items: flex-end; }
+.sch.planned .side small { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; }
+.cal-split #calDayList { gap: 8px; }
+@media (max-width: 760px) { .sch.planned { grid-template-columns: 60px minmax(0, 1fr) auto; } .sch.planned .side { grid-column: auto; } }
+.sch.planned .meta > * { flex: none; }
+.sch.planned .meta > span:not(.pubno):not(.tag) { display: none; } /* host + "1 hour" hidden in thin rows (every booking is 1 hour) */
+@media (max-width: 480px) { .sch.planned .meta .tag + .tag { display: none; } }

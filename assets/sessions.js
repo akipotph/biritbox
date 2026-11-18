@@ -161,7 +161,7 @@
     return "data:text/calendar;charset=utf-8," + encodeURIComponent(body);
   }
   function planCard(p) {
-    var c = clock(p.startAt), started = p.startAt <= Date.now(), isLive = Object.keys(found).some(function (k) { return found[k].pubNo === p.pubNo; });
+    var c = clock(p.startAt), started = p.startAt <= Date.now(), isLive = started && p.endsAt > Date.now() && Object.keys(found).some(function (k) { return found[k].pubNo === p.pubNo; }); // only the booking whose hour is NOW (user Nov 18: 7:00 showed Live at 5:23)
     var btn = '<a class="btn ghost" download="birit-box-session.ics" href="' + ics(p) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18M12 13v5M9.5 15.5h5"/></svg>Add to calendar</a>';
     return '<article class="sch planned">' +
       '<div class="when"><span class="d">' + esc(dayLabel(p.startAt)) + '</span><span class="t">' + c.t + '</span><span class="ap">' + c.ap + '</span></div>' +

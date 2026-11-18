@@ -147,7 +147,7 @@ export function publish(ev, relays = RELAYS) {
 // a session's BOOKING (scheduled, or "on the go" = now): replaces any earlier one for the same room code
 export async function scheduleEvent(s) {
   const content = JSON.stringify({ v: 1, pub: s.pub, pubNo: s.pubNo, mode: s.mode, host: s.host, startAt: s.startAt, endsAt: s.endsAt, cancelled: !!s.cancelled, live: !!s.live });
-  const exp = Math.floor((s.cancelled ? Date.now() + 60000 : s.endsAt) / 1000);
+  const exp = Math.floor(Math.max(s.endsAt || 0, Date.now() + 60000) / 1000); // the cancel must outlive the booking (Nov 18: a relay that missed the cancel brought the hour back)
   return signEvent({ kind: KIND, content, tags: [["d", "biritbox:" + s.roomId], ["t", TAG], ["expiration", String(exp)]] }, myKey(), s.cancelled ? 0 : POW_BITS);
 }
 
