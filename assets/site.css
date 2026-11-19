@@ -655,6 +655,3 @@ footer .wordmark { font-size: 22px; }
 .cal-grid.board .hr { transition: background-color 0.15s, border-color 0.15s; }
 
 
-/* hovered tile: the little bars blend with the orange (user, Nov 19) */
-.cal-grid.board .hr:not(.past):hover .bars i { box-shadow: none; background: rgba(255, 255, 255, 0.28); }
-.cal-grid.board .hr:not(.past):hover .bars i.duet, .cal-grid.board .hr:not(.past):hover .bars i.tapatan, .cal-grid.board .hr:not(.past):hover .bars i.group { background: #FFFFFF; }

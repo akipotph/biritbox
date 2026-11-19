@@ -228,7 +228,9 @@
     pts.forEach(function (pt) { var n = 0; list.forEach(function (a) { if (a.startAt <= pt && pt < a.endsAt) n++; }); if (n > most) most = n; });
     return most;
   }
-  function inHour(st) { return bookings.filter(function (x) { return x.startAt < st + 3600e3 && st < x.endsAt && (filter === "all" || x.mode === filter); }).sort(function (a, z) { return a.startAt - z.startAt; }); }
+  // a booking belongs to the hour it STARTS in (Nov 19: a 9:12 walk-in showed in 9 PM and 10 PM)
+  function hourOf(t) { var d = new Date(t); d.setMinutes(0, 0, 0); return d.getTime(); }
+  function inHour(st) { return bookings.filter(function (x) { return hourOf(x.startAt) === st && (filter === "all" || x.mode === filter); }).sort(function (a, z) { return a.startAt - z.startAt; }); }
   function renderCal() {
     var grid = document.getElementById("calGrid");
     if (!grid) return;
@@ -240,7 +242,7 @@
     grid.className = "cal-grid board";
     var html = "";
     for (var h = OPEN_H; h < CLOSE_H; h++) {
-      var st = t0 + h * 3600e3, en = st + 3600e3, past = en <= now, near = inHour(st), n = Math.min(PER_HOUR, busyIn(near, st, en));
+      var st = t0 + h * 3600e3, en = st + 3600e3, past = en <= now, near = inHour(st), n = Math.min(PER_HOUR, near.length);
       var bars = ""; for (var i = 0; i < PER_HOUR; i++) bars += '<i class="' + (near[i] ? near[i].mode : "") + '"></i>';
       var lbl = (h % 12 || 12) + " " + (h < 12 ? "AM" : "PM");
       html += '<button type="button" class="hr' + (past ? " past" : "") + (n >= PER_HOUR ? " full" : "") + '" data-hour="' + st + '"' + (near.length ? ' data-has="1"' : "") + ' aria-label="' + lbl + ", " + n + " of " + PER_HOUR + ' booked"><b>' + lbl + '</b><span class="bars">' + bars + "</span><em>" + (n >= PER_HOUR ? "Full" : n + "/" + PER_HOUR) + "</em></button>";

@@ -247,6 +247,8 @@ export function busyIn(list, startAt, endsAt) {
   for (const p of pts) { let n = 0; for (const a of list) if (a.startAt <= p && p < a.endsAt) n++; if (n > most) most = n; }
   return most;
 }
+// the hour a booking belongs to = the hour it STARTS in (user, Nov 19: "bakit dalawa lumabas? walk-in yun eh")
+export function hourOf(t) { const d = new Date(t); d.setMinutes(0, 0, 0); return d.getTime(); }
 export function winners(list) {
   const per = new Map(), out = [];
   for (const b of [...list].sort((a, z) => a.created - z.created || (a.id < z.id ? -1 : 1))) {
@@ -254,7 +256,8 @@ export function winners(list) {
     if (n >= 3) continue;
     const near = out.filter((a) => a.startAt < b.endsAt && b.startAt < a.endsAt);
     if (near.some((a) => a.by === b.by)) continue;               // one device, one session at a time
-    if (busyIn(near, b.startAt, b.endsAt) >= PER_HOUR) continue;  // that hour is full
+    const h = hourOf(b.startAt);
+    if (out.filter((a) => hourOf(a.startAt) === h).length >= PER_HOUR) continue;   // its starting hour is full
     per.set(b.by, n + 1);
     out.push(b);
   }
@@ -263,8 +266,8 @@ export function winners(list) {
 // can [startAt, endsAt) still be booked? null = yes. Otherwise: MY OWN booking at that time (when `me` is given),
 // or { full: true, n } when PER_HOUR sessions already run then. (The booking for `room` itself doesn't count.)
 export function clash(list, startAt, endsAt, room, me) {
-  const near = winners(list).filter((b) => b.room !== room && b.startAt < endsAt && startAt < b.endsAt);
-  if (me) { const own = near.find((b) => b.by === me); if (own) return own; }
-  const n = busyIn(near, startAt, endsAt);
+  const W = winners(list).filter((b) => b.room !== room);
+  if (me) { const own = W.find((b) => b.by === me && b.startAt < endsAt && startAt < b.endsAt); if (own) return own; }
+  const n = W.filter((b) => hourOf(b.startAt) === hourOf(startAt)).length;
   return n >= PER_HOUR ? { full: true, n } : null;
 }
