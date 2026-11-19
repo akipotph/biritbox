@@ -9,8 +9,8 @@
   --rule: rgba(43, 27, 23, 0.12); --rule-strong: rgba(43, 27, 23, 0.25); }
 :root[data-palette] body { background-color: var(--paper); color: var(--ink); }
 /* the theme button in the header + its menu */
-.theme-btn { width: 40px; height: 40px; border-radius: 12px; border: 1.5px solid var(--rule-strong); background: transparent; color: var(--ink); display: grid; place-items: center; cursor: pointer; flex: none; }
-.theme-btn:hover { border-color: var(--mango); color: var(--mango); }
+.pl-btn { width: 40px; height: 40px; border-radius: 12px; border: 1.5px solid var(--rule-strong); background: transparent; color: var(--ink); display: grid; place-items: center; cursor: pointer; flex: none; }
+.pl-btn:hover { background: var(--mango); border-color: var(--mango); color: #1A1206; }
 .pl-menu { position: fixed; z-index: 5000; width: 240px; padding: 8px; border-radius: 14px; background: var(--card); border: 1.5px solid var(--rule-strong); display: flex; flex-direction: column; gap: 4px; }
 .pl-menu[hidden] { display: none; }
 .pl-head { display: flex; align-items: center; gap: 8px; padding: 4px 6px 8px; color: var(--ink); font: 400 1rem var(--font-display); }

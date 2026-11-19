@@ -608,3 +608,53 @@ footer .wordmark { font-size: 22px; }
 .cal-tip.v2 .tp-ttl strong { color: #FF8A8F; font-weight: 700; }
 @media (max-width: 640px) { .cal-grid.board { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 0 8px; } .cal-grid.board .hr { padding: 6px 5px 5px; } .cal-grid.board .hr b { font-size: 0.74rem; } }
 .cal-nav[hidden] { display: none !important; }
+/* "Walk-in" = a session started right away with Birit na! on a free hour, not scheduled ahead (user, Nov 19) */
+.tag.walkin { background: transparent; border: 1.5px solid var(--orange); color: var(--orange); gap: 4px; padding: 2px 8px; }
+.tag.walkin svg { width: 11px; height: 11px; }
+
+/* the live / booked / walk-in counts as stat chips (user, Nov 19) */
+.sch-count { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.sch-count .stat { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px 5px 9px; border-radius: 999px; border: 1.5px solid var(--rule-strong);
+  background: var(--card); color: var(--ink-soft); font: 700 0.74rem/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+.sch-count .stat b { font: 400 1rem/1 var(--font-display); letter-spacing: 0; color: var(--ink); }
+.sch-count .stat svg { width: 14px; height: 14px; flex: none; }
+.sch-count .s-live { border-color: rgba(34, 197, 94, 0.55); color: #4ADE80; }
+.sch-count .s-live .dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); animation: liveGlow 1.8s ease-in-out infinite; }
+.sch-count .s-booked { border-color: var(--mango); color: var(--mango); }
+.sch-count .s-walkin { border-color: var(--orange); color: var(--orange); }
+@media (prefers-reduced-motion: reduce) { .sch-count .s-live .dot { animation: none; } }
+
+/* EVERY button gets a SOLID hover (user, Nov 19: "lahat ng button solid hover") — flat fills, no outlines-only */
+.btn.ghost:hover { background: var(--orange); border-color: var(--orange); color: #FFF; }
+.btn.primary:hover { background: var(--orange); border-color: var(--orange); color: #FFF; }
+.seg button:hover:not([aria-pressed="true"]) { background: var(--orange); color: #FFF; }
+.nav a:hover { background: var(--orange); color: #FFF; }
+.cal-nav button:hover:not(:disabled) { background: var(--mango); border-color: var(--mango); color: #1A1206; }
+.theme-btn:hover { background: var(--red); }
+.btn, .seg button, .nav a, .cal-nav button, .pl-btn, .theme-btn { transition: background-color 0.15s, color 0.15s, border-color 0.15s; }
+/* Refresh = a pill like the stat chips, its own colour (user, Nov 19: "same size ng mga pill … ibahin ang color") */
+.btn.sch-refresh { min-height: 0; height: auto; padding: 6px 12px 6px 10px; border-radius: 999px; border: 1.5px solid var(--teal); background: var(--card); color: var(--teal);
+  font: 700 0.74rem/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; gap: 6px; box-shadow: none; }
+.btn.sch-refresh svg { width: 14px; height: 14px; }
+.btn.sch-refresh:hover:not([disabled]) { background: var(--teal); border-color: var(--teal); color: #062B27; }
+.btn.sch-refresh[disabled], .btn.sch-refresh[disabled]:hover { background: var(--card); border-color: var(--teal); color: var(--teal); opacity: 0.75; cursor: progress; }
+@keyframes refSpin { to { transform: rotate(360deg); } }
+/* commercial status badges: a solid round badge with a clear glyph (user, Nov 19) */
+.sch-count .stat { padding: 3px 11px 3px 3px; gap: 7px; }
+.sch-count .stat .ic { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.sch-count .stat .ic svg { width: 14px; height: 14px; }
+.sch-count .s-live .ic { background: #22C55E; color: #04210F; animation: liveGlow 1.8s ease-in-out infinite; }
+.sch-count .s-booked .ic { background: var(--mango); color: #1A1206; }
+.sch-count .s-walkin .ic { background: var(--orange); color: #FFF; }
+@media (prefers-reduced-motion: reduce) { .sch-count .s-live .ic { animation: none; } }
+/* the hour tiles: a SOLID hover (user, Nov 19) */
+.cal-grid.board .hr:not(.past):hover { background: var(--orange); border-color: var(--orange); color: #FFF; }
+.cal-grid.board .hr:not(.past):hover em { color: #FFF; }
+.cal-grid.board .hr:not(.past):hover .bars i:not(.duet):not(.tapatan):not(.group) { background: rgba(255, 255, 255, 0.35); }
+.cal-grid.board .hr:not(.past):hover .bars i { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55); }
+.cal-grid.board .hr { transition: background-color 0.15s, border-color 0.15s; }
+
+
+/* hovered tile: the little bars blend with the orange (user, Nov 19) */
+.cal-grid.board .hr:not(.past):hover .bars i { box-shadow: none; background: rgba(255, 255, 255, 0.28); }
+.cal-grid.board .hr:not(.past):hover .bars i.duet, .cal-grid.board .hr:not(.past):hover .bars i.tapatan, .cal-grid.board .hr:not(.past):hover .bars i.group { background: #FFFFFF; }

@@ -127,11 +127,21 @@
   var MODE_NAME = { tapatan: "Tapatan", group: "Group", duet: "Duet" };
   function modePill(m) { return '<span class="mpill ' + m + '">' + (MODE_NAME[m] || "") + "</span>"; }
   function vinyl(m) { return '<div class="mode vinyl ' + m + '"><span class="vl"><img src="assets/modes/' + m + '.svg" alt=""></span></div>'; }
+  // ---- ONE Listen button that knows the device (user, Nov 19: "auto detect … PC or Mobile / Tablet"; "isang button lang"):
+  // Android phone / tablet → the Birit Box app (biritbox://guest/<code>); a computer → listening in the Birit Box
+  // running on it (http://localhost:3030/r/<code>?p2p=1&guest=1, a new tab).
+  var isPhone = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || "") || (/Macintosh/.test(navigator.userAgent || "") && navigator.maxTouchPoints > 1);
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a[data-listen]"); if (!a || isPhone) return;
+    e.preventDefault();
+    window.open("http://localhost:3030/r/" + encodeURIComponent(a.getAttribute("data-listen")) + "?p2p=1&guest=1", "_blank", "noopener");
+  });
+
   function card(l) {
     var c = clock(l.createdAt || Date.now()), full = l.listeners >= l.max, code = l.guest && l.guestUntil > Date.now();
     var who = esc(l.host) + (l.mode === "group" ? " · " + l.singers + " singers" : l.partner ? " &amp; " + esc(l.partner) : "");
     var btn = full ? '<span class="btn ghost is-off">' + IC.users + 'Full</span>'
-      : code ? '<a class="btn primary" href="biritbox://guest/' + esc(l.guest) + '">' + IC.ear + 'Listen</a>'
+      : code ? '<a class="btn primary" href="biritbox://guest/' + esc(l.guest) + '" data-listen="' + esc(l.guest) + '" data-pub="' + esc(l.pub) + '" data-pubno="' + esc(l.pubNo) + '">' + IC.ear + 'Listen</a>'
       : '<span class="btn ghost is-off">' + IC.wait + 'Opening soon</span>';
     return '<article class="sch live">' +
       '<div class="when"><span class="d">Live</span><span class="t">' + c.t + ' <small>' + c.ap + '</small></span>' + modePill(l.mode) + '</div>' +
@@ -172,7 +182,8 @@
       '<div class="mode ' + p.mode + '"><img src="assets/modes/' + p.mode + '.svg" alt=""></div>' +
       '<div class="info"><h3 class="pub">' + esc(p.pub) + '</h3><div class="meta">' +
         '<span class="pubno"><b>PUB #</b><span>' + p.pubNo + '</span></span>' +
-        (isLive ? '<span class="tag live"><i></i>Live now — see above</span>' : started ? '<span class="tag soon">Starting — host not on yet</span>' : '<span class="tag upcoming">Upcoming</span><span class="tag soon">In ' + left(p.startAt - Date.now()) + '</span>') +
+        (p.live ? '<span class="tag walkin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3.5h3.5a2.5 2.5 0 0 1 2.5 2.5v12a2.5 2.5 0 0 1-2.5 2.5H14"/><path d="M9.5 16.5 14 12l-4.5-4.5"/><path d="M14 12H3.5"/></svg>Walk-in</span>' : "") +
+        (isLive ? '<span class="tag live"><i></i>Live now — see above</span>' : started ? '<span class="tag soon">' + (p.live ? "Host not on yet" : "Starting — host not on yet") + '</span>' : '<span class="tag upcoming">Upcoming</span><span class="tag soon">In ' + left(p.startAt - Date.now()) + '</span>') +
         '<span>' + IC.user + esc(p.host) + '</span><span>' + IC.wait + '1 hour</span>' +
       '</div></div>' +
       '<div class="side">' + modePill(p.mode) + '</div>' +
@@ -244,9 +255,21 @@
       .filter(function (l) { return l.endsAt > Date.now() && (filter === "all" || l.mode === filter); })
       .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
     var liveNos = {}; Object.keys(found).forEach(function (k) { liveNos[found[k].pubNo] = 1; });
-    var upcoming = bookings.filter(function (p) { return p.endsAt > Date.now() && !liveNos[p.pubNo]; }).length;
+    // booked = scheduled ahead; walk-in = started right away with "Birit na!" on a free hour (user, Nov 19)
+    var upcoming = bookings.filter(function (p) { return p.endsAt > Date.now() && !p.live && !liveNos[p.pubNo]; }).length;
+    var walkins = bookings.filter(function (p) { return p.endsAt > Date.now() && p.live; }).length;
     var total = rows.length + upcoming;
-    document.getElementById("schCount").textContent = rows.length + " live · " + upcoming + " booked";
+    // three stat chips with icons (user, Nov 19: "lagyan mo design … plain lang")
+    var I = function (d) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + "</svg>"; };
+    // commercial icon badges (user, Nov 19: "pang commercial icon sana"): a solid round badge per status
+    var B = function (d, sw) { return '<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (sw || 2.4) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + "</svg></span>"; };
+    var ON_AIR = '<circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><path d="M8.3 8.3a5.2 5.2 0 0 0 0 7.4M15.7 8.3a5.2 5.2 0 0 1 0 7.4M5.5 5.5a9.2 9.2 0 0 0 0 13M18.5 5.5a9.2 9.2 0 0 1 0 13"/>';
+    var CAL_OK = '<rect x="3.5" y="5" width="17" height="16" rx="3.2"/><path d="M8 2.8v4.4M16 2.8v4.4M3.5 10h17"/><path d="M8.6 15.2l2.4 2.4 4.6-4.8"/>';
+    var ENTER = '<path d="M14 3.5h3.5a2.5 2.5 0 0 1 2.5 2.5v12a2.5 2.5 0 0 1-2.5 2.5H14"/><path d="M9.5 16.5 14 12l-4.5-4.5"/><path d="M14 12H3.5"/>';
+    document.getElementById("schCount").innerHTML =
+      '<span class="stat s-live" title="On air now">' + B(ON_AIR, 2.3) + "<b>" + rows.length + "</b>Live</span>" +
+      '<span class="stat s-booked" title="Scheduled ahead">' + B(CAL_OK) + "<b>" + upcoming + "</b>Booked</span>" +
+      '<span class="stat s-walkin" title="Started right away with Birit na!">' + B(ENTER) + "<b>" + walkins + "</b>Walk-in</span>";
     list.innerHTML = rows.map(card).join("");
     list.hidden = !rows.length;
     document.getElementById("schEmpty").hidden = !!total;
