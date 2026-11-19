@@ -187,50 +187,57 @@
   // a day with more than 4 bookings: a small card with all of them on hover / focus
   var calTip = null;
   function showCalTip(b) {
-    var ms = Number(b.getAttribute("data-day"));
-    var day = bookings.filter(function (x) { return x.startAt < ms + 864e5 && x.endsAt > ms && (filter === "all" || x.mode === filter); }).sort(function (a, z) { return a.startAt - z.startAt; });
-    if (!calTip) { calTip = document.createElement("div"); calTip.className = "cal-tip"; calTip.setAttribute("role", "tooltip"); document.body.appendChild(calTip); }
-    // the same card as the app's hour card (user, Nov 18: "sa website ganyan din"): icons, PUB # chip, outlined mode pills
-    var ic = function (d) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + "</svg>"; };
-    var CAL = ic('<rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/>'), PEOPLE = ic('<circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.7c2.6.2 4.4 2 5 5.3"/>'), MIC = ic('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>');
-    var NAME = { duet: "Duet", tapatan: "Tapatan", group: "Group" };
+    var st = Number(b.getAttribute("data-hour")), day = inHour(st);
+    if (!day.length) { hideCalTip(); return; }
+    if (!calTip) { calTip = document.createElement("div"); calTip.setAttribute("role", "tooltip"); document.body.appendChild(calTip); }
+    var ic = function (dd) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + dd + "</svg>"; };
+    var CLOCK = ic('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'), PEOPLE = ic('<circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.7c2.6.2 4.4 2 5 5.3"/>'), MIC = ic('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>');
+    var NAME = { duet: "Duet", tapatan: "Tapatan", group: "Group" }, n = Math.min(PER_HOUR, day.length), full = n >= PER_HOUR;
+    var meter = ""; for (var i = 0; i < PER_HOUR; i++) meter += '<i class="' + (day[i] ? day[i].mode : "") + '"></i>';
     calTip.className = "cal-tip v2";
-    calTip.innerHTML = '<div class="tp-head"><span class="tp-tile">' + CAL + '</span><div class="tp-ttl"><b>' + esc(dayLabel(ms)) + '</b><small>' + PEOPLE + day.length + (day.length === 1 ? " session" : " sessions") + "</small></div></div>" +
-      '<ul class="tp-list">' + day.slice(0, 8).map(function (x) {
-        return '<li><span class="tp-time">' + fullTime(x.startAt) + '</span><span class="tp-no"><b>PUB #</b>' + esc(x.pubNo) + '</span><span class="tp-name" title="' + esc(x.pub) + '">' + MIC + "<span>" + esc(x.pub) + "</span></span>" +
+    calTip.innerHTML = '<div class="tp-head"><span class="tp-tile">' + CLOCK + '</span><div class="tp-ttl"><b>' + fullTime(st) + " – " + fullTime(st + 3600e3) + "</b><small>" + PEOPLE + n + " of " + PER_HOUR + " places" + (full ? ' · <strong>Full</strong>' : "") + "</small></div></div>" +
+      '<div class="tp-meter">' + meter + '</div><ul class="tp-list">' + day.map(function (x) {
+        return '<li><span class="tp-no"><b>PUB #</b>' + esc(x.pubNo) + '</span><span class="tp-name" title="' + esc(x.pub) + '">' + MIC + "<span>" + esc(x.pub) + "</span></span>" +
           '<em class="tp-mode ' + x.mode + '"><i class="tp-fig" style="--fig:url(' + new URL("assets/modes/" + x.mode + ".svg", location.href).href + ')"></i>' + NAME[x.mode] + "</em></li>";
-      }).join("") + (day.length > 8 ? '<li class="tp-more">+' + (day.length - 8) + " more in today's list</li>" : "") + "</ul>";
+      }).join("") + "</ul>";
     calTip.hidden = false;
-    var r = b.getBoundingClientRect(), w = calTip.offsetWidth, h = calTip.offsetHeight;
-    var left = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, innerWidth - w - 8)), top = r.top - h - 6;
+    var r = b.getBoundingClientRect(), w = calTip.offsetWidth, hh = calTip.offsetHeight;
+    var left = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, innerWidth - w - 8)), top = r.top - hh - 6;
     if (top < 8) top = r.bottom + 6;
+    top = Math.max(8, Math.min(top, innerHeight - hh - 8));
     calTip.style.left = left + "px"; calTip.style.top = top + "px";
   }
   function hideCalTip() { if (calTip) calTip.hidden = true; }
+  // TODAY's board, like the app (user, Nov 19: "pati design na bago ng calendar"): bookings are for today only, so
+  // 16 hour tiles (7 AM – 10 PM starts), 10 bars each (one per place, coloured by mode) and "n/10"; hover = the
+  // hour card. A booking counts on the day it STARTS (Nov 19 bug: 11:04 PM – 12:04 AM showed on the next day too).
+  var OPEN_H = 7, CLOSE_H = 23, PER_HOUR = 10;
+  function busyIn(list, st, en) {
+    var pts = [st].concat(list.filter(function (a) { return a.startAt > st && a.startAt < en; }).map(function (a) { return a.startAt; })), most = 0;
+    pts.forEach(function (pt) { var n = 0; list.forEach(function (a) { if (a.startAt <= pt && pt < a.endsAt) n++; }); if (n > most) most = n; });
+    return most;
+  }
+  function inHour(st) { return bookings.filter(function (x) { return x.startAt < st + 3600e3 && st < x.endsAt && (filter === "all" || x.mode === filter); }).sort(function (a, z) { return a.startAt - z.startAt; }); }
   function renderCal() {
     var grid = document.getElementById("calGrid");
     if (!grid) return;
-    var base = new Date(); base.setDate(1); base.setHours(0, 0, 0, 0); base.setMonth(base.getMonth() + calMonth);
-    document.getElementById("calTitle").textContent = MONTHS[base.getMonth()];
-    document.getElementById("calYear").textContent = base.getFullYear();
-    document.getElementById("calPrev").disabled = calMonth <= 0;
-    document.getElementById("calNext").disabled = calMonth >= 1;
-    var first = base.getDay(), days = new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate(), t0 = dayStart(Date.now());
-    var html = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(function (d, i) { return '<span class="cal-wd w' + (i % 2) + '">' + d + "</span>"; }).join("");
-    for (var e = 0; e < first; e++) html += '<span class="cal-blank"></span>';
-    for (var i = 1; i <= days; i++) {
-      var ms = new Date(base.getFullYear(), base.getMonth(), i).getTime();
-      var list = bookings.filter(function (x) { return x.startAt < ms + 864e5 && x.endsAt > ms && (filter === "all" || x.mode === filter); });
-      // like the app (user, Nov 18): pills on the RIGHT of the date, full "8:00 PM", up to 4; more → 3 + "+N" + a tooltip card
-      var shown = list.length > 4 ? 3 : list.length;
-      var pills = list.length ? '<span class="cal-pills">' + list.slice(0, shown).map(function (x) { return '<em class="' + x.mode + '">' + fullTime(x.startAt) + "</em>"; }).join("") + (list.length > shown ? '<em class="more">+' + (list.length - shown) + "</em>" : "") + "</span>" : "";
-      html += '<button type="button" data-day="' + ms + '"' + (list.length > 4 ? ' data-more="1"' : "") + (list.length ? ' data-has="1"' : "") + ' class="' + (ms < t0 ? "past " : "") + (ms === t0 ? "today" : "") + '" aria-pressed="' + (ms === calDay) + '"><b>' + i + "</b>" + pills + "</button>";
+    var t0 = dayStart(Date.now()), now = Date.now(), d = new Date(t0);
+    calDay = t0;
+    document.getElementById("calTitle").textContent = "Today · " + MON[d.getMonth()] + " " + d.getDate();
+    document.getElementById("calYear").textContent = "";
+    var nav = document.querySelector("#schCal .cal-nav"); if (nav) nav.hidden = true;
+    grid.className = "cal-grid board";
+    var html = "";
+    for (var h = OPEN_H; h < CLOSE_H; h++) {
+      var st = t0 + h * 3600e3, en = st + 3600e3, past = en <= now, near = inHour(st), n = Math.min(PER_HOUR, busyIn(near, st, en));
+      var bars = ""; for (var i = 0; i < PER_HOUR; i++) bars += '<i class="' + (near[i] ? near[i].mode : "") + '"></i>';
+      var lbl = (h % 12 || 12) + " " + (h < 12 ? "AM" : "PM");
+      html += '<button type="button" class="hr' + (past ? " past" : "") + (n >= PER_HOUR ? " full" : "") + '" data-hour="' + st + '"' + (near.length ? ' data-has="1"' : "") + ' aria-label="' + lbl + ", " + n + " of " + PER_HOUR + ' booked"><b>' + lbl + '</b><span class="bars">' + bars + "</span><em>" + (n >= PER_HOUR ? "Full" : n + "/" + PER_HOUR) + "</em></button>";
     }
     grid.innerHTML = html;
-    var day = bookings.filter(function (x) { return x.startAt < calDay + 864e5 && x.endsAt > calDay && (filter === "all" || x.mode === filter); }).sort(function (a, z) { return a.startAt - z.startAt; });
-    var d = new Date(calDay);
-    document.getElementById("calDayTitle").textContent = dayLabel(calDay) + (dayLabel(calDay).indexOf(" ") < 0 ? " · " + MON[d.getMonth()] + " " + d.getDate() : "") + " — " + (day.length ? day.length + (day.length === 1 ? " session" : " sessions") : "free all day");
-    document.getElementById("calDayList").innerHTML = day.length ? day.map(planCard).join("") : '<div class="cal-free">No one has booked this day yet. Hosts book an hour in the Birit Box app (calendar button beside Birit na!).</div>';
+    var day = bookings.filter(function (x) { return x.startAt >= t0 && x.startAt < t0 + 864e5 && (filter === "all" || x.mode === filter); }).sort(function (a, z) { return a.startAt - z.startAt; });
+    document.getElementById("calDayTitle").textContent = "Today · " + MON[d.getMonth()] + " " + d.getDate() + " — " + (day.length ? day.length + (day.length === 1 ? " session" : " sessions") : "free all day");
+    document.getElementById("calDayList").innerHTML = day.length ? day.map(planCard).join("") : '<div class="cal-free">No one has booked today yet. Hosts book an hour in the Birit Box app (calendar button beside Birit na!).</div>';
   }
   function render() {
     var rows = Object.keys(found).map(function (k) { return found[k]; })
@@ -253,9 +260,9 @@
   }
   (function () {
     var g = document.getElementById("calGrid"); if (!g) return;
-    g.addEventListener("mouseover", function (e) { var b = e.target.closest("[data-has]"); if (b) showCalTip(b); else hideCalTip(); });
+    g.addEventListener("mouseover", function (e) { var b = e.target.closest("[data-hour]"); if (b) showCalTip(b); else hideCalTip(); });
     g.addEventListener("mouseleave", hideCalTip);
-    g.addEventListener("focusin", function (e) { var b = e.target.closest("[data-has]"); if (b) showCalTip(b); });
+    g.addEventListener("focusin", function (e) { var b = e.target.closest("[data-hour]"); if (b) showCalTip(b); });
     g.addEventListener("focusout", hideCalTip);
     addEventListener("scroll", hideCalTip, { passive: true });
   })();

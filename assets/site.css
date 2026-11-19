@@ -589,3 +589,22 @@ footer .wordmark { font-size: 22px; }
 .cal-tip.v2 .tp-mode .tp-fig { width: 14px; height: 11px; min-width: 0; background: currentColor; -webkit-mask: var(--fig) center / contain no-repeat; mask: var(--fig) center / contain no-repeat; display: inline-block; }
 .cal-tip.v2 .tp-list li.tp-more { justify-content: center; color: var(--ink-mute); font-size: 0.76rem; background: none; }
 .cal-tip.v2 .tp-mode .tp-fig { min-width: 0 !important; }
+
+/* TODAY's board (user, Nov 19 — same as the app): 16 hour tiles, 10 bars each */
+.cal-grid.board { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 0 12px; }
+.cal-grid.board .hr { height: auto; aspect-ratio: auto; display: flex; flex-direction: column; align-items: stretch; gap: 5px; padding: 8px 8px 7px; border-radius: 10px;
+  border: 1px solid var(--rule); background: transparent; color: var(--ink); text-align: left; cursor: default; }
+.cal-grid.board .hr:hover { border-color: var(--rule-strong); }
+.cal-grid.board .hr b { font: 600 0.86rem/1 var(--font-body); padding: 0; }
+.cal-grid.board .hr .bars { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; }
+.cal-grid.board .hr .bars i { display: block; height: 6px; border-radius: 2px; background: rgba(var(--wash, 255, 241, 230), 0.12); }
+.cal-grid.board .hr .bars i.duet { background: var(--red); } .cal-grid.board .hr .bars i.tapatan { background: var(--orange); } .cal-grid.board .hr .bars i.group { background: var(--teal); }
+.cal-grid.board .hr em { font: 500 0.7rem/1 var(--font-body); font-style: normal; color: var(--ink-mute); background: none; padding: 0; text-align: left; }
+.cal-grid.board .hr.full em { color: #FF8A8F; }
+.cal-grid.board .hr.past { opacity: 0.35; }
+.cal-tip.v2 .tp-meter { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; padding: 0 12px 10px; box-sizing: border-box; width: 100%; }
+.cal-tip.v2 .tp-meter i { height: 5px; border-radius: 3px; background: rgba(255, 241, 230, 0.1); display: block; min-width: 0; }
+.cal-tip.v2 .tp-meter i.duet { background: var(--red); } .cal-tip.v2 .tp-meter i.tapatan { background: var(--orange); } .cal-tip.v2 .tp-meter i.group { background: var(--teal); }
+.cal-tip.v2 .tp-ttl strong { color: #FF8A8F; font-weight: 700; }
+@media (max-width: 640px) { .cal-grid.board { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 0 8px; } .cal-grid.board .hr { padding: 6px 5px 5px; } .cal-grid.board .hr b { font-size: 0.74rem; } }
+.cal-nav[hidden] { display: none !important; }

@@ -1,5 +1,6 @@
 /* Website themes (user, Nov 18): the same four as the app — Light, Dark, Mango Night, Teal Club */
-:root { --card-2: #161616; }
+:root { --card-2: #161616; --wash: 255, 241, 230; }
+:root[data-theme="light"] { --wash: 43, 27, 23; }
 :root[data-palette="mango"] { --paper: #0A0908; --card: #15130F; --card-2: #1D1A15; --ink: #FFF4E3; --ink-soft: #D9C7AE; --ink-mute: #9E8A70;
   --rule: rgba(255, 210, 122, 0.14); --rule-strong: rgba(255, 210, 122, 0.3); --red: #D9741A; --orange: #FFB84D; --mango: #FFD27A; --teal: #2EC4B6; }
 :root[data-palette="teal"] { --paper: #05100F; --card: #0C1B1A; --card-2: #112624; --ink: #E9FFFB; --ink-soft: #A9CFC9; --ink-mute: #6F9993;
