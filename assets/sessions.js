@@ -127,15 +127,8 @@
   var MODE_NAME = { tapatan: "Tapatan", group: "Group", duet: "Duet" };
   function modePill(m) { return '<span class="mpill ' + m + '">' + (MODE_NAME[m] || "") + "</span>"; }
   function vinyl(m) { return '<div class="mode vinyl ' + m + '"><span class="vl"><img src="assets/modes/' + m + '.svg" alt=""></span></div>'; }
-  // ---- ONE Listen button that knows the device (user, Nov 19: "auto detect … PC or Mobile / Tablet"; "isang button lang"):
-  // Android phone / tablet → the Birit Box app (biritbox://guest/<code>); a computer → listening in the Birit Box
-  // running on it (http://localhost:3030/r/<code>?p2p=1&guest=1, a new tab).
-  var isPhone = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || "") || (/Macintosh/.test(navigator.userAgent || "") && navigator.maxTouchPoints > 1);
-  document.addEventListener("click", function (e) {
-    var a = e.target.closest && e.target.closest("a[data-listen]"); if (!a || isPhone) return;
-    e.preventDefault();
-    window.open("http://localhost:3030/r/" + encodeURIComponent(a.getAttribute("data-listen")) + "?p2p=1&guest=1", "_blank", "noopener");
-  });
+  // ---- Listen = biritbox://guest/<code> on every device (user, Nov 19): a phone/tablet opens the Birit Box app,
+  // a PC opens the Birit Box .exe (registered for biritbox:// in Windows) — never the browser.
 
   function card(l) {
     var c = clock(l.createdAt || Date.now()), full = l.listeners >= l.max, code = l.guest && l.guestUntil > Date.now();
